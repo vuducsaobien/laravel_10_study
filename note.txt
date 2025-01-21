@@ -1,1 +1,24 @@
 init docker files
+
+env:
+
+APP_URL=http://localhost:8010
+DB_CONNECTION=mysql
+DB_HOST=mariadb
+DB_PORT=3306
+DB_DATABASE=laravel_10_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+docker compose build --no-cache
+docker-compose up -d
+
+Navicat mysql connection
+host : localhost
+Port: 3312
+User name : root
+password : abcd
+
+virtual host
+:server_name duc-1-laravel-10.local;
+truy cap: http://localhost:8010/
