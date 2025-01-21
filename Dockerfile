@@ -30,13 +30,13 @@ RUN apt-get update \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Set working directory
-WORKDIR /var/www/duc-1-laravel-10
+WORKDIR /var/www/laravel_10_study
 
 # Copy the project files
-COPY . /var/www/duc-1-laravel-10
+COPY . /var/www/laravel_10_study
 
 # Set ownership for writable directories
-RUN chown -R www-data:www-data /var/www/duc-1-laravel-10/storage /var/www/duc-1-laravel-10/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/laravel_10_study/storage /var/www/laravel_10_study/bootstrap/cache
 
 # Set default command to run PHP-FPM
 # CMD ["php-fpm"]

@@ -1,24 +1,28 @@
 init docker files
 
 env:
-
-APP_URL=http://localhost:8010
-DB_CONNECTION=mysql
-DB_HOST=mariadb
-DB_PORT=3306
-DB_DATABASE=laravel_10_db
-DB_USERNAME=root
-DB_PASSWORD=
+    DB_CONNECTION=mysql
+    DB_HOST=mariadb
+    DB_PORT=3306
+    DB_DATABASE=laravel
+    DB_USERNAME=root
+    DB_PASSWORD=abcd
 
 docker compose build --no-cache
 docker-compose up -d
 
-Navicat mysql connection
-host : localhost
-Port: 3312
-User name : root
-password : abcd
+NAVICAT mysql connection
+    host : localhost
+    Port: 3309
+    User name : root
+    password : abcd
 
 virtual host
 :server_name duc-1-laravel-10.local;
-truy cap: http://localhost:8010/
+truy cap: http://localhost:8000/
+
+
+php artisan make:factory Table1Factory --model=Table1
+php artisan tinker
+\App\Models\Table1::factory(10)->create();
+=> Truy cap http://localhost:8000/

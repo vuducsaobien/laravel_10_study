@@ -3,35 +3,35 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8010:80"
-      # - "447:447"
+      - "8000:80"
+      # - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - .:/var/www/duc-1-laravel-10
+      - .:/var/www/laravel_10_study
       # - certbot-etc:/etc/letsencrypt
       # - certbot-var:/var/lib/letsencrypt
     networks:
-      - opensea
+      - laravel_10_study_l
     restart: always
-  duc-1-laravel-10:
+  laravel_10_study:
     build:
       context: . 
       dockerfile: Dockerfile
     ports:
-      - "8910:9000"  
+      - "8900:9000"  
     volumes:
-      - .:/var/www/duc-1-laravel-10
+      - .:/var/www/laravel_10_study
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
     depends_on:
       - mariadb
     networks:
-      - opensea
+      - laravel_10_study_l
     restart: always
   mariadb:
     image: 'mariadb:11.5.2'
     command: --max_allowed_packet=2048M
     ports:
-      - '${FORWARD_DB_PORT:-3312}:3306'
+      - '${FORWARD_DB_PORT:-3309}:3306'
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'
@@ -42,26 +42,10 @@ services:
       - 'mariadb:/var/lib/mysql'
       - ./mariadb/init:/docker-entrypoint-initdb.d
     networks:
-      - opensea
+      - laravel_10_study_l
     restart: always
-    # healthcheck:
-    #   test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
-    #   retries: 3
-    #   timeout: 5s
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    restart: always
-    depends_on:
-      - mariadb
-    ports:
-      - 8085:85
-    environment:
-      PMA_HOST: mariadb
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    networks:
-      - opensea
 networks:
-  opensea:
+  laravel_10_study_l:
     driver: bridge
 volumes:
   mariadb:
