@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Finger;
+use App\Models\Phone;
 
 class User extends Authenticatable
 {
@@ -17,10 +18,17 @@ class User extends Authenticatable
     public $timestamps = FALSE;
 
     // Relationship
-    public function finger()
+    public function finger() // One to One
     {
         return $this->hasOne(Finger::class, 'user_id');
     }
+
+    public function phones() // One to Many
+    {
+        return $this->hasMany(Phone::class, 'user_id');
+    }
+    // End Relationship
+
 
     /**
      * The attributes that are mass assignable.

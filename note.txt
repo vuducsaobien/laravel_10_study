@@ -21,12 +21,6 @@ virtual host
 :server_name duc-1-laravel-10.local;
 truy cap: http://localhost:8000/
 
-
-php artisan make:factory Table1Factory --model=Table1
-php artisan tinker
-\App\Models\Table1::factory(10)->create();
-=> Truy cap http://localhost:8000/
-
 1. onDelete('cascade')
     - Khi xóa cha 
         (Table 1): Các bản ghi con (table 2) bị xóa.
@@ -50,18 +44,16 @@ php artisan tinker
     Trong Db transaction
 
 -------------------------------- Relationship Model --------------------------------
+Cách tạo DB
+php artisan migrate
+php artisan db:seed
+
 1. one to one
     Sử dụng 2 table User & Finger
     Xoá table_1 trong DB
     chạy php artisan migrate
     Xoá column migration 2025_01_21_000001_create_table_11 trong table migrations
     php artisan migrate:refresh  // refresh id tự tăng trong DB
-
-    php artisan tinker
-    \App\Models\User::factory()
-    ->has(\App\Models\Finger::factory()->count(1)) // Tạo 2 x 1 = 2 bản ghi trong table Finger - One to One
-    ->count(2) // Tạo 2 bản ghi trong table User
-    ->create();
 
 Explain - one to one ; cha con như nhau
     - Mỗi User chỉ có 1 Finger      - Môĩ Finger chỉ thuộc về 1 User
@@ -70,5 +62,11 @@ Explain - one to one ; cha con như nhau
     - Table 1 : cha : User
     - Table 2 : con : Finger
 
+2. One to Many
+    - Sử dụng 2 table : User - cha & Phone - con
+    - 1 User có thể có nhiều số điện thoại - Phone (Many)
+    - Nhưng 1 số điện thoại chỉ thuộc về 1 User (Ones) 
+    - Số điện thoại là Unique (ví dụ số đt 0123456 là duy nhất)
+    http://localhost:8000/oneToMany
 
 
