@@ -26,3 +26,49 @@ php artisan make:factory Table1Factory --model=Table1
 php artisan tinker
 \App\Models\Table1::factory(10)->create();
 => Truy cap http://localhost:8000/
+
+1. onDelete('cascade')
+    - Khi xóa cha 
+        (Table 1): Các bản ghi con (table 2) bị xóa.
+        Khi table cha - table 1 : có id = 1 bị xoá
+        => ở table con - table 2 : Các bản ghi nào có column table_1_id = 1 sẽ bị xoá tự động
+        - Cách kiểm tra: Xoá id = 1 trong table cha - table 1
+
+2. onDelete('restrict')
+    - Khi xóa cha 
+    Ngăn không cho xóa hoặc cập nhật bản ghi cha nếu tồn tại bản ghi con liên quan.
+        Nếu table 2       có bản ghi table_1_id = 1 => Ở table cha không xoá id = 1 được
+        Nếu table 2 không có bản ghi table_1_id = 1 => Ở table cha       xoá id = 1 được
+
+3. onDelete('set null')
+    Mô tả: Khi một bản ghi cha bị xóa hoặc cập nhật, các bản ghi con sẽ đặt giá trị trong cột khóa ngoại thành NUL
+    Lưu ý: Cột khóa ngoại trong bảng con phải cho phép NULL (table_1_id phải được NULL)
+
+4. onDelete('no action')
+    Mô tả: Tương tự restrict, nhưng hành động xóa hoặc cập nhật cha sẽ không bị kiểm tra ngay lập tức
+    Quyết định lỗi phụ thuộc vào việc thực thi các ràng buộc sau đó trong cơ sở dữ liệu.
+    Trong Db transaction
+
+-------------------------------- Relationship Model --------------------------------
+1. one to one
+    Sử dụng 2 table User & Finger
+    Xoá table_1 trong DB
+    chạy php artisan migrate
+    Xoá column migration 2025_01_21_000001_create_table_11 trong table migrations
+    php artisan migrate:refresh  // refresh id tự tăng trong DB
+
+    php artisan tinker
+    \App\Models\User::factory()
+    ->has(\App\Models\Finger::factory()->count(1)) // Tạo 2 x 1 = 2 bản ghi trong table Finger - One to One
+    ->count(2) // Tạo 2 bản ghi trong table User
+    ->create();
+
+Explain - one to one ; cha con như nhau
+    - Mỗi User chỉ có 1 Finger      - Môĩ Finger chỉ thuộc về 1 User
+            ONE                     -           ONE
+    - Nếu thêm 1 bản ghi finger có user_id đã tồn tại trong column user_id trong table finger thì không tạo được
+    - Table 1 : cha : User
+    - Table 2 : con : Finger
+
+
+
