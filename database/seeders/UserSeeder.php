@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
 
         if (DB::table('users')->count() > 0) {
 
-            $tablesPhuThuoc = ['fingers', 'phones'];
+            $tablesPhuThuoc = ['fingers', 'phones', 'products', 'users_products'];
 
             // Tắt kiểm tra khóa ngoại
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');

@@ -6,16 +6,22 @@ env:
     DB_PORT=3306
     DB_DATABASE=laravel
     DB_USERNAME=root
-    DB_PASSWORD=abcd
+    DB_PASSWORD=
 
 docker compose build --no-cache
 docker-compose up -d
 
 NAVICAT mysql connection
     host : localhost
-    Port: 3309
+    Port: 3306
     User name : root
-    password : abcd
+    password : 
+
+Docker 
+    + To delete all containers including its volumes use, // docker rm -vf $(docker ps -aq)
+    + To delete all the images, // docker rmi -f $(docker images -aq)
+    + remove all docker volumes? // docker system prune
+    + docker inspect bcb781603606 (container id) | grep IPAddress
 
 virtual host
 :server_name duc-1-laravel-10.local;
@@ -68,5 +74,28 @@ Explain - one to one ; cha con như nhau
     - Nhưng 1 số điện thoại chỉ thuộc về 1 User (Ones) 
     - Số điện thoại là Unique (ví dụ số đt 0123456 là duy nhất)
     http://localhost:8000/oneToMany
+
+3. Many to Many
+    - Sử dụng 3 table : 
+        + User
+        + table trung gian (users_products)
+        + Products
+    - 1 User có thể mua nhiều Sản phầm
+    - 1 Sản phẩm có thể được mua bới nhiều User
+    - Để ý việc trùng lặp cặp column (user_id & product_id)
+        ( Có 2 bản ghi trong table trung gian - users_products có cùng cặp giá trị user_id & product_id
+            id      user_id     product_id 
+            1         2         3
+            2         2         3
+        )
+
+        + Trường hợp Không trùng lặp (table trung gian - users_products không thể có 2 bản ghi như id = 1 & id = 2 như ví dụ trên)
+            - Sử dụng unique constraint để ngăn cặp user_id và product_id trùng lặp
+
+
+
+
+        + Trường hợp Không trùng lặp (table trung gian - users_products có thể có    2 bản ghi như id = 1 & id = 2 như ví dụ trên - Trường hợp này chiếm đa số)
+
 
 

@@ -27,6 +27,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Phone::class, 'user_id');
     }
+
+    public function products() // Many to Many
+    {
+        return $this->belongsToMany(Product::class, 'users_products', 'user_id', 'product_id');
+    }
+
     // End Relationship
 
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\FingerSeeder;
 use Database\Seeders\PhoneSeeder;
+use Database\Seeders\UserProductSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,6 +20,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             FingerSeeder::class,
             PhoneSeeder::class,
+            ProductSeeder::class,
+            UserProductSeeder::class,
         ]);
     }
 }
