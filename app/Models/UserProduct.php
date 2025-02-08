@@ -34,27 +34,25 @@ class UserProduct extends Model
 
     public function getUniqueUsersByProductId($productId)
     {
-        // return $this->where('product_id', $productId)->distinct('user_id')
-        //     ->with('user') // Lấy thêm thông tin user (name, ...)
-        //     ->get();
-
-        // return User::select('name')->distinct()->get();
-
-        return DB::table('users')
-            ->select('id','name', 'email')
-            ->groupBy('name')
-            ->get();
+        return $this->where('product_id', $productId)
+        // ->select('*') // Chỉ lấy cột user_id
+        ->select('user_id') // Chỉ lấy cột user_id
+        ->groupBy('user_id') // Nhóm theo user_id để loại bỏ trùng lặp
+        // ->pluck('user_id') // Lấy danh sách user_id không trùng lặp
+        ->with('user')
+        ->get()
+        ;
     }
 
     public function getUniqueProductsByUserId($userId)
     {
-        // return $this->where('user_id', $userId)->distinct('product_id')->get();
-
         return $this->where('user_id', $userId)
-        // ->select('product_id') // Chỉ lấy product_id
-        ->select(['id', 'product_id', 'user_id']) // Chỉ lấy product_id
-        ->groupBy('product_id') // Nhóm theo product_id để tránh trùng lặp
-        ->with('product') // Lấy thêm thông tin của sản phẩm
-        ->get();
+        // ->select('*') // Chỉ lấy cột user_id
+        ->select('product_id') // Chỉ lấy cột user_id
+        ->groupBy('product_id') // Nhóm theo user_id để loại bỏ trùng lặp
+        // ->pluck('user_id') // Lấy danh sách user_id không trùng lặp
+        ->with('product')
+        ->get()
+        ;
     }
 }
