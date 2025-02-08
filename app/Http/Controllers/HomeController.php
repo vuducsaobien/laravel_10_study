@@ -88,10 +88,21 @@ class HomeController extends Controller
         // echo '<pre style="color:red";>$users === '; print_r($users);echo '</pre>';
 
         // 3. Tìm xem user_id = 1 thì có những mua những product nào ?       
-        $userId = 3;
-        $products = $this->__userProduct->getUniqueProductsByUserId($userId);
+        // $userId = 3;
+        // $products = $this->__userProduct->getUniqueProductsByUserId($userId);
+        // echo '<pre style="color:red";>$products === '; print_r($products);echo '</pre>';
+
+        // 4. Lấy danh sách sản phẩm mà một user đã mua kèm thông tin pivot
+        $user = User::find(3);
+        $products = $user->products->toArray();
         echo '<pre style="color:red";>$products === '; print_r($products);echo '</pre>';
 
+        foreach ($user->products as $product) {
+            $productName = $product->name;
+            $quantity = $product->pivot->quantity;
+            echo '<pre style="color:red";>$productName === '; print_r($productName);echo '</pre>';
+            echo '<pre style="color:red";>$quantity === '; print_r($quantity);echo '</pre>';
+        }
         echo '<h3>Die is Called - 21w3</h3>';die;
     }
 

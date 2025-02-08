@@ -16,7 +16,9 @@ class Product extends Model
 
     public function users() // Many to Many
     {
-        return $this->belongsToMany(User::class, 'users_products', 'product_id', 'user_id');
+        return $this->belongsToMany(User::class, 'users_products', 'product_id', 'user_id')
+        ->withPivot('quantity')
+        ;
     }
 
     

@@ -1,32 +1,3 @@
-init docker files
-
-env:
-    DB_CONNECTION=mysql
-    DB_HOST=mariadb
-    DB_PORT=3306
-    DB_DATABASE=laravel
-    DB_USERNAME=root
-    DB_PASSWORD=
-
-docker compose build --no-cache
-docker-compose up -d
-
-NAVICAT mysql connection
-    host : localhost
-    Port: 3306
-    User name : root
-    password : 
-
-Docker 
-    + To delete all containers including its volumes use, // docker rm -vf $(docker ps -aq)
-    + To delete all the images, // docker rmi -f $(docker images -aq)
-    + remove all docker volumes? // docker system prune
-    + docker inspect bcb781603606 (container id) | grep IPAddress
-
-virtual host
-:server_name duc-1-laravel-10.local;
-truy cap: http://localhost:8000/
-
 1. onDelete('cascade')
     - Khi xóa cha 
         (Table 1): Các bản ghi con (table 2) bị xóa.
@@ -50,9 +21,6 @@ truy cap: http://localhost:8000/
     Trong Db transaction
 
 -------------------------------- Relationship Model --------------------------------
-Cách tạo DB
-php artisan migrate
-php artisan db:seed
 
 1. one to one
     Sử dụng 2 table User & Finger
@@ -93,58 +61,7 @@ Explain - one to one ; cha con như nhau
             - Sử dụng unique constraint để ngăn cặp user_id và product_id trùng lặp
 
 
-
-
         + Trường hợp Không trùng lặp (table trung gian - users_products có thể có    2 bản ghi như id = 1 & id = 2 như ví dụ trên - Trường hợp này chiếm đa số)
 
-
-
-php artisan make:factory Table1Factory --model=Table1
-php artisan tinker
-\App\Models\Table1::factory(10)->create();
-=> Truy cap http://localhost:8000/
-
-
------------------------------------ Cách cài đặt Xampp & setup môi trường Laravel -----------------------------------
-Folder Project dự án phải nằm trong folder htdocs của xampp
-
-xampp 8.2
-
-.env
-    DB_CONNECTION=mysql
-    DB_HOST=localhost
-    DB_PORT=3307
-    DB_DATABASE=db_la_10
-    DB_USERNAME=la10
-    DB_PASSWORD=123asd
-
-Database management (Dbeaver)
-    host
-
-
-
-Xampp control panel
-    Apache (default 80:443 => 81:444)
-        Config
-
-    MySql(default 3306 => 3307)
-        
-
-Virtual host
-    C:\DataD\software_install\xampp_8_2\apache\conf\extra\httpd-vhosts.conf 
-        =>
-        <VirtualHost *:81>
-            ServerAdmin lar_10.local
-            DocumentRoot "C:/DataD/software_install/xampp_8_2/htdocs/laravel_10_study"
-            ServerName lar_10.local
-        </VirtualHost>
-
-    c:\Windows\System32\drivers\etc\hosts.txt
-    => 127.0.0.1:81    lar_10.local
-
-=> http://lar_10.local:81/ là vào được dự án
-
-=> truy cập    http://lar_10.local:81/oneToOneExample
-
-Cách restore DB = db files sql
-    Vào Dbeaver => tạo db tên db_la_10 => Restore = file sql
+        + Pivot của bảng trung gian User_products
+4. 

@@ -30,7 +30,9 @@ class User extends Authenticatable
 
     public function products() // Many to Many
     {
-        return $this->belongsToMany(Product::class, 'users_products', 'user_id', 'product_id');
+        return $this->belongsToMany(Product::class, 'users_products', 'user_id', 'product_id')
+        ->withPivot('quantity', 'id') // Lấy thêm cột trung gian
+        ;
     }
 
     // End Relationship
