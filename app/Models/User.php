@@ -9,6 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Finger;
 use App\Models\Phone;
+use App\Models\Plan;
+use App\Models\Subscription;
+use Illuminate\Support\Carbon;
 
 class User extends Authenticatable
 {
@@ -35,6 +38,36 @@ class User extends Authenticatable
         ;
     }
 
+    public function plans() { // Has Many Through
+        return $this->hasManyThrough(
+            Plan::class,
+            Subscription::class,
+            'user_id',    // Foreign key on subscriptions table
+            'id',         // Local key on plans table
+            'id',         // Local key on users table
+            'plan_id'     // Foreign key on subscriptions table
+        )
+        ->statusActive() // = ->where('plans.status', 'active')
+        ;
+    }
+
+    public function availablePlans()
+    {
+        // return $this->plans()
+        //     ->whereHas('subscriptions', function($query) {
+        //         $query->valid(); // không dùng được vì hasManyThrough không trực tiếp lấy bảng trung gian mà chỉ đến bảng đích - plan thôi
+        // });
+        $now = '2025-05-15';
+        return $this->plans()
+            ->where('subscriptions.end_at', '>', $now)
+        ;
+    }
+
+    public function uniquePlans()
+    {
+        return $this->availablePlans()
+            ->distinct();
+    }
     // End Relationship
 
 
@@ -67,4 +100,13 @@ class User extends Authenticatable
     protected $casts = [
         // 'email_verified_at' => 'datetime',
     ];
+
+    public function latestPlan()
+    {
+        return $this->availablePlans()
+            ->orderBy('subscriptions.id', 'desc')
+            ->first()
+        ;
+    }
+
 }

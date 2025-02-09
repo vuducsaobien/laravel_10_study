@@ -64,4 +64,47 @@ Explain - one to one ; cha con như nhau
         + Trường hợp Không trùng lặp (table trung gian - users_products có thể có    2 bản ghi như id = 1 & id = 2 như ví dụ trên - Trường hợp này chiếm đa số)
 
         + Pivot của bảng trung gian User_products
-4. 
+
+4. Has Many Through (Có nhiều qua) - http://lar_10.local:81/hasManyThrough
+    - Quan hệ Has Many Through được sử dụng khi một bảng A - chính có 
+        (nhiều bản ghi) liên quan đến bảng C - đích - plan 
+        thông qua bảng B - trung gian - subcription.
+
+    - Quan hệ Has One Through được sử dụng khi một bảng A - chính có 
+        (một bản ghi) liên quan đến bảng C - đích 
+        thông qua bảng B - trung gian.
+    
+    - hasManyThrough không cho phép bạn truy vấn trực tiếp các cột từ bảng trung gian (subscriptions). 
+    Khi sử dụng hasManyThrough, Eloquent chỉ trả về dữ liệu từ bảng đích (plans).
+
+    - Một user có thể có nhiều subscriptions (gói đăng ký) Hay 1 User có thể mua được nhiều gói
+        Một subscription thuộc về một plan
+
+        users (Bảng chính - A)
+        subscriptions (gói đăng ký - B bảng trung gian)
+        plans (gói dịch vụ - C bảng đích)
+
+    - Data mẫu bản ghi bảng trung gian subcription: user_id & plan_id có thể bị trùng lặp
+    id  name                            end_at                  user_id     plan_id
+    1	Sub 1 - plan A - not available	2025-01-15 00:00:00	    1	        1
+    2	Sub 2 - plan A - available		2025-06-15 00:00:00	    1	        1
+    3	Sub 3 - plan A - available		2025-06-15 00:00:00	    1	        1
+    4	Sub 4 - plan B - available		2025-06-15 00:00:00	    1	        2
+
+    - So sánh
+    hasOneThrough & hasManyThrough:
+        Không cần truy vấn bảng trung gian (subscriptions), chỉ tập trung lấy bảng cuối (plans).
+        Không thể filter/sort bảng trung gian.
+        Nếu cần filter subscriptions, phải dùng whereHas()
+
+        hasOneThrough & hasManyThrough → Không cần truy vấn bảng trung gian
+        Mặc định, Laravel tự động JOIN bảng trung gian (subscriptions) mà không cần query thủ công trong model hoặc controller.
+        Không thể filter trực tiếp bảng trung gian (subscriptions) bằng where(), orderBy(), vì Eloquent chỉ tập trung lấy kết quả cuối cùng (Plan).
+        Chỉ có thể filter trên bảng đích (plans).
+
+        hasOneThrough() → Lấy 1 bản ghi duy nhất từ bảng cuối cùng.
+        hasManyThrough() → Lấy tất cả bản ghi từ bảng cuối cùng.
+
+    manyToMany:
+        Cần truy vấn bảng trung gian (wherePivot(), orderByPivot()).
+        Có thể filter/sort bảng trung gian.

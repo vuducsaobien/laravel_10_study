@@ -106,5 +106,21 @@ class HomeController extends Controller
         echo '<h3>Die is Called - 21w3</h3>';die;
     }
 
+    public function hasManyThrough()
+    {
+        // Kiểm tra user có plan hay không
+        $user = User::find(1); // has plan
+        // $user = User::find(2); // has not plan
+
+        if ($user->plans()->exists()) {
+            $availablePlans = $user->availablePlans;
+            $latestPlan = $user->latestPlan();
+            $uniquePlans = $user->uniquePlans;
+
+            echo '<pre style="color:red";>latestPlan === '; print_r($latestPlan);echo '</pre>';
+            echo '<pre style="color:red";>availablePlans === '; print_r($availablePlans);echo '</pre>';
+            echo '<pre style="color:red";>uniquePlans === '; print_r($uniquePlans);echo '</pre>';
+        }
+    }
 
 }
