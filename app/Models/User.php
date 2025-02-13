@@ -11,6 +11,8 @@ use App\Models\Finger;
 use App\Models\Phone;
 use App\Models\Plan;
 use App\Models\Subscription;
+use App\Models\Supplier;
+use App\Models\History;
 use Illuminate\Support\Carbon;
 
 class User extends Authenticatable
@@ -68,6 +70,16 @@ class User extends Authenticatable
         return $this->availablePlans()
             ->distinct();
     }
+
+    public function supplier() // has One Through
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    public function history() // has One Through
+    {
+        return $this->hasOne(History::class);
+    }
     // End Relationship
 
 
@@ -78,8 +90,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        // 'email',
-        // 'password',
+        'supplier_id',
     ];
 
     /**

@@ -83,6 +83,7 @@ Explain - one to one ; cha con như nhau
         users (Bảng chính - A)
         subscriptions (gói đăng ký - B bảng trung gian)
         plans (gói dịch vụ - C bảng đích)
+        User ➝ Subscription ➝ Plan ( User => Subscription => Plan)
 
     - Data mẫu bản ghi bảng trung gian subcription: user_id & plan_id có thể bị trùng lặp
     id  name                            end_at                  user_id     plan_id
@@ -108,3 +109,41 @@ Explain - one to one ; cha con như nhau
     manyToMany:
         Cần truy vấn bảng trung gian (wherePivot(), orderByPivot()).
         Có thể filter/sort bảng trung gian.
+
+    5. Has One Through http://lar_10.local:81/hasOneThrough
+        Supplier ➝ User ➝ History
+        history chỉ cần biết user_id là đủ, vì user có thể có tối đa một bản ghi lịch sử liên quan.
+        hasOneThrough ở đây sẽ lấy một bản ghi history duy nhất thông qua user
+
+        Ví dụ Cấu trúc
+            users	history
+            id = 1	user_id = 1
+            id = 2	user_id = 2
+        🔹 Chỉ cần user_id là đủ để tra ngược supplier.
+
+        hasOneThrough, mối quan hệ này hoạt động theo cách một Supplier chỉ có thể lấy ra đúng một bản ghi từ bảng History thông qua User.
+        $supplier = Supplier::find(1);
+        $history = $supplier->userHistory;
+
+        UserModel có 2 relation ; History Model có 1 relation ; Supplier Model có 2 relation
+        A. FK
+        Table Users 
+            có supplier_id 
+            => User Model (1)                                   => Supplier Model (1): 
+            public function supplier()                          public function user()
+            { return $this->belongsTo(Supplier::class); }       { return $this->hasOne(User::class); }
+
+        Table History 
+            có user_id 
+            => History Model (1)                                => User Model (2):
+            public function user()                              public function history()
+            { return $this->belongsTo(User::class); }           { return $this->hasOne(History::class); }    
+
+        B. Has One Through : Supplier ➝ User ➝ History ; từ Supplier thông qua ($through) User - để lấy History ($related)
+        => Supplier Model:
+        public function userHistory()
+                                        $related    , $through
+        { return $this->hasOneThrough(History::class, User::class); }
+        => $supplier = Supplier::find(1);
+        => $history = $supplier->userHistory;
+

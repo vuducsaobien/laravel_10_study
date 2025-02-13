@@ -19,5 +19,6 @@ Route::get('/oneToOneExample', [HomeController::class, 'oneToOneExample'])->name
 Route::get('/oneToMany', [HomeController::class, 'oneToMany'])->name('oneToMany');
 Route::get('/manyToMany', [HomeController::class, 'manyToMany'])->name('manyToMany');
 Route::get('/hasManyThrough', [HomeController::class, 'hasManyThrough'])->name('hasManyThrough');
+Route::get('/hasOneThrough', [HomeController::class, 'hasOneThrough'])->name('hasOneThrough');
 
 

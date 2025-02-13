@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserProduct;
+use App\Models\Supplier;
 
 class HomeController extends Controller
 {
@@ -123,4 +124,33 @@ class HomeController extends Controller
         }
     }
 
+    public function hasOneThrough()
+    {
+        // A. Kiểm tra Supplier
+        $supplier = Supplier::find(1); // has record
+        // $supplier = Supplier::find(2); // has not record
+
+        if (!empty($supplier->userHistory)) {
+            $history = $supplier->userHistory;
+            echo '<pre style="color:red";>history === '; print_r($history->detail);echo '</pre>';    
+        }
+
+
+        // $user = U::find(1);
+        // $history = $supplier->userHistory; // Lấy lịch sử của user thông qua supplier
+        // echo '<pre style="color:red";>history === '; print_r($history);echo '</pre>';
+
+        // B. Kiểm tra user có plan hay không
+        // $user = User::find(1); // has history_order
+        // $user = User::find(2); // has not history_order
+        // if ($user->history()->exists()) {
+        //     // $supplierName = $user->supplier->name;
+        //     // echo '<pre style="color:red";>supplierName === '; print_r($supplierName);echo '</pre>';
+
+        //     $history = $user->history;
+        //     echo '<pre style="color:red";>history === '; print_r($history->detail);echo '</pre>';
+
+        //     echo '<h3>Die is Called - history</h3>';die;
+        // }
+    }
 }
