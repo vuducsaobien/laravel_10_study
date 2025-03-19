@@ -55,20 +55,34 @@ class User extends Authenticatable
 
     public function availablePlans()
     {
-        // return $this->plans()
-        //     ->whereHas('subscriptions', function($query) {
-        //         $query->valid(); // không dùng được vì hasManyThrough không trực tiếp lấy bảng trung gian mà chỉ đến bảng đích - plan thôi
-        // });
-        $now = '2025-05-15';
         return $this->plans()
-            ->where('subscriptions.end_at', '>', $now)
-        ;
+            ->where('subscriptions.end_at', '>', now());
     }
 
     public function uniquePlans()
     {
         return $this->availablePlans()
             ->distinct();
+    }
+
+    public function hasActiveSubscription()
+    {
+        return $this->subscriptions()->valid()->exists();
+    }
+
+    public function getActiveSubscription()
+    {
+        return $this->subscriptions()->valid()->first();
+    }
+
+    public function getHasActiveSubscriptionAttribute()
+    {
+        return $this->hasActiveSubscription();
+    }
+
+    public function getActiveSubscriptionAttribute()
+    {
+        return $this->getActiveSubscription();
     }
 
     public function supplier() // has One Through

@@ -20,11 +20,9 @@ class Subscription extends Model
     }
 
     // Scopes
-    // public function scopeValid($query) // không dùng được vì hasManyThrough không trực tiếp lấy bảng trung gian mà chỉ đến bảng đích - plan thôi
-    // {
-    //     $now = '2025-05-15';
-    //     // $now = now();
-    //     return $query->where('end_at', '>', $now);
-    // }
+    public function scopeValid($query) 
+    {
+        return $query->where('end_at', '>', now());
+    }
     
 }
