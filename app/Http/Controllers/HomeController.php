@@ -25,8 +25,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = User::where('id', 1)->first();
-        echo '<pre style="color:red";>$user === '; print_r($user);echo '</pre>';
+        // $user = User::where('id', 1)->first();
+        // echo '<pre style="color:red";>$user === '; print_r($user);echo '</pre>';
         echo '<h3>Die is Called - index</h3>';die;
         // return view('frontend.pages.home', compact('warning', 'visas', 'jsonProducts', 'jsonTimes', 'count', 'services', 'countries'));
     }

@@ -7,11 +7,11 @@ services:
       # - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - .:/var/www/laravel_10_study
+      - .:/var/www/laravel_10_study:delegated
       # - certbot-etc:/etc/letsencrypt
       # - certbot-var:/var/lib/letsencrypt
     networks:
-      - laravel_10_study_l
+      - laravel_10_study
     restart: always
   laravel_10_study:
     build:
@@ -20,12 +20,12 @@ services:
     ports:
       - "8900:9000"  
     volumes:
-      - .:/var/www/laravel_10_study
+      - .:/var/www/laravel_10_study:delegated
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
     depends_on:
       - mariadb
     networks:
-      - laravel_10_study_l
+      - laravel_10_study
     restart: always
   mariadb:
     image: 'mariadb:11.5.2'
@@ -42,10 +42,10 @@ services:
       - 'mariadb:/var/lib/mysql'
       - ./mariadb/init:/docker-entrypoint-initdb.d
     networks:
-      - laravel_10_study_l
+      - laravel_10_study
     restart: always
 networks:
-  laravel_10_study_l:
+  laravel_10_study:
     driver: bridge
 volumes:
   mariadb:
