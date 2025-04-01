@@ -1,45 +1,51 @@
 FROM php:8.2-fpm
-RUN pecl install redis-5.3.7 \
-	&& pecl install xdebug-3.2.1 \
-	&& docker-php-ext-enable redis xdebug
 
-RUN apt-get update \
-# Install APT packages
-    && apt-get install -y  \
-# Install ZIP library
-    libzip-dev \
-# Install ZIP binary
-    zip \
-# Install Git binary
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
     git \
-# Install PostgresSQL library
-    libpq-dev \
-# Install Process monitoring package
-    procps \
-    && docker-php-ext-install pdo_mysql \
-# Remove APT lists
-    && rm -rf /var/lib/apt/lists/*
-# Intall mariadb client 
-RUN apt-get update \
-    && apt-get install -y mariadb-client
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev
 
 # Clear cache
-# RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Install Xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/laravel_10_study
 
-# Copy the project files
-COPY . /var/www/laravel_10_study
+# Copy existing application directory
+COPY . .
 
-# Set ownership for writable directories
-RUN chown -R www-data:www-data /var/www/laravel_10_study/storage /var/www/laravel_10_study/bootstrap/cache
+# Install dependencies
+RUN composer install
 
-# Set default command to run PHP-FPM
-# CMD ["php-fpm"]
+# Create storage directory structure
+RUN mkdir -p /var/www/laravel_10_study/storage/logs \
+    && mkdir -p /var/www/laravel_10_study/storage/framework/{sessions,views,cache} \
+    && mkdir -p /var/www/laravel_10_study/bootstrap/cache
 
-# Expose port
+# Set permissions
+RUN chown -R www-data:www-data /var/www/laravel_10_study \
+    && chmod -R 775 /var/www/laravel_10_study/storage \
+    && chmod -R 775 /var/www/laravel_10_study/bootstrap/cache
+
+# Expose port 9000
 EXPOSE 9000
+
+CMD ["php-fpm"]

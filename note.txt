@@ -147,3 +147,44 @@ Explain - one to one ; cha con như nhau
         => $supplier = Supplier::find(1);
         => $history = $supplier->userHistory;
 
+- Docker
+    + Xóa hết các Images, Container, Build cũ ở Docker Desktop
+    + env: 
+        - DB_CONNECTION=mysql
+        - DB_HOST=mariadb
+        - DB_PORT=3309
+        - DB_DATABASE=laravel_10_study
+        - DB_USERNAME=root_abc
+        - DB_PASSWORD=root_abc_password
+    + docker-compose build --no-cache
+    + docker-compose up -d
+    + Kết nối DBeaver:
+        - Server host : localhost
+        - Port: 3309
+        - Database: laravel_10_study
+        - Username: root
+        - Password: root_abc_password
+
+    + Trên Containers Tab 
+        - laravel_10_study                  
+                                                Images                              Port
+            + nginx-1                           nginx:latest                        8000:80
+            + mariadb-1                         mariadb:11.5.2                      3309:3306
+            + laravel_10_study-1                laravel_10_study-laravel_10_study   8900:9000
+    + Trên Docker Images có 3 Imgaes riêng biệt
+        - laravel_10_study-laravel_10_study : latest
+        - nginx                             : latest
+        - mariadb                           : 11.5.2
+    + Trên Volumes Tab: laravel_10_study_mariadb
+    + Trên Builds Tab: laravel_10_study
+
+docker-compose exec laravel_10_study bash
+chown -R www-data:www-data /var/www/laravel_10_study/storage
+chmod -R 775 /var/www/laravel_10_study/storage
+
+touch /var/www/laravel_10_study/storage/logs/laravel.log
+chown www-data:www-data /var/www/laravel_10_study/storage/logs/laravel.log
+chmod 664 /var/www/laravel_10_study/storage/logs/laravel.log
+
+Hoặc excute vào Container laravel_10_study-1 chạy các lệnh trên
+php artisan key:generate
