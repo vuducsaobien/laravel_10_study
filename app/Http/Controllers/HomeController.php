@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserProduct;
 use App\Models\Supplier;
+use App\Helpers\CacheHelper;
+use App\Enum\CacheKeysEnum;
 
 class HomeController extends Controller
 {
@@ -99,8 +101,8 @@ class HomeController extends Controller
         echo '<pre style="color:red";>$products === '; print_r($products);echo '</pre>';
 
         foreach ($user->products as $product) {
-            $productName = $product->name;
-            $quantity = $product->pivot->quantity;
+            $productName = $product['name'];
+            $quantity = $product['pivot']['quantity'];
             echo '<pre style="color:red";>$productName === '; print_r($productName);echo '</pre>';
             echo '<pre style="color:red";>$quantity === '; print_r($quantity);echo '</pre>';
         }
@@ -152,5 +154,29 @@ class HomeController extends Controller
 
         //     echo '<h3>Die is Called - history</h3>';die;
         // }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function redis()
+    {
+        // Caching Modek Object
+        $productKey = CacheHelper::generateKey(CacheKeysEnum::PRODUCT_BY_ID, 2);
+        $product = Product::getFromCacheOrSet($productKey, function () {
+            // return Product::find(2);
+            // return $model->findByProductIdModel(2);
+            return (new Product())->findByProductIdModel(2);
+        });
+        echo '<pre style="color:red";>$product === '; print_r($product);echo '</pre>';
+
+        // 2.Caching Page
+        // $pageKey = CacheHelper::generateKey(CacheKeysEnum::LIST_PAGE_PRODUCTS, 1);
+        // $page1 = Product::getFromCacheOrSet($pageKey, function () {
+        //     return (new Product())->paginationPage(1);
+        // });
+        // echo '<pre style="color:red";>$page === '; print_r($page1);echo '</pre>';
+
+        // echo '<h3>Die is Called - redis</h3>';die;
     }
 }

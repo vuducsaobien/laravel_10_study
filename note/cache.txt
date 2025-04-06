@@ -1,0 +1,17 @@
+- Khởi động được container Redis trong cùng Container Laravel
+- CacheHelper => CustomRedisCache 
+    => Trong app, code source dự án dùng CacheHelper => CustomRedisCache
+    => Nếu sau này có đổi Cache Interface từ Redis sang MemCache chẳng hạn
+        => Thì chỉ cần thêm 1 file CustomMemCache, CacheHelper đổi từ Redis sang Mem thôi, code trên dự án không đổi, vẫn là ->CacheHelper
+- Các vấn đề khi dùng Cache
+    + Dùng Cache để Cache Object Model PHP (cache chỉ cache được array, json, string thôi)
+        - Kết nối Cache thành công / thất bại
+    + Phải nghĩ đến trường hợp kết nối đến Cache không thành công
+        - Thử nghiệm test bằng cách bật / tắt container Redis
+        - Dùng try catch - return false trong mọi hàm để tiếp tục flow code
+        - Chia ra 2 logic: 
+            + Kết nối với Redis thất bại thì làm gì
+            + Kết nối tới Cache - Redis thành công thì làm gì
+- Dùng Redis UI như Redis Insight để test
+    + Nhớ key họ có thể đổi tên, nên chỉ chú ý đến value thôi
+    
