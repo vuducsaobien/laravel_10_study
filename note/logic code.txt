@@ -1,0 +1,6 @@
+- Kỹ thuật retry (thử lại)
+    + Dựa vào try catch, nếu catch được thì thử lại
+    + Áp dụng cho các logic / Api quan trọng như API order
+
+- Kĩ thuật thu nhỏ hàm
+    + Cố gắng chia nhỏ thành các function con, sử dụng lại nhiều nhất có thể.
