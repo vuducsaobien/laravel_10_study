@@ -1,0 +1,17 @@
+Cài đặt extension PHP Debug trong VS Code / Cursor
+
+Tạo file cấu hình launch.json trong thư mục .vscode với nội dung:
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003
+        }
+    ]
+}
+
+thư mục .vscode nằm trong root dự án Laravel, không có thì tự tạo
+mkdir .vscode

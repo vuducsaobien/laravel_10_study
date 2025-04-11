@@ -22,6 +22,12 @@ services:
     volumes:
       - .:/var/www/laravel_10_study:delegated
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
+      XDEBUG_CONFIG: "client_host=host.docker.internal"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - mariadb
       - redis
@@ -48,11 +54,13 @@ services:
   redis:
     image: redis:alpine
     container_name: laravel_redis
-    restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'redis:/data'
     networks:
       - laravel_10_study
+    restart: always
 networks:
   laravel_10_study:
     driver: bridge
@@ -61,3 +69,5 @@ volumes:
     driver: local
   # certbot-etc:
   # certbot-var:
+  redis:
+    driver: local
