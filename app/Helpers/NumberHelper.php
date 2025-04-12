@@ -169,4 +169,45 @@ class NumberHelper
         //*/
         return $reversed * 10 + self::getLastCharacterOfNumber($number);
     }
+
+    // 1. Two Sum - Tổng hai số
+    /**
+     * @param int[] $nums
+     * @param int $target
+     * @return int[]
+     */
+    public static function twoSum(array $nums, int $target): array
+    {
+        $map = []; // key: số đã duyệt, value: index của nó
+        foreach ($nums as $index => $num) {
+            $diff = $target - $num;
+            if (isset($map[$diff])) {
+                return [$map[$diff], $index];
+            }
+            $map[$num] = $index;
+        }
+        return []; // Trường hợp không tìm thấy cặp số nào
+    }
+
+    // 2. Palindrome Number - Số đối xứng
+    public static function isPalindrome(int $x): bool
+    {
+        // Quick checks
+        if (self::isNegativeInt($x) || (
+            self::isZero($x) && self::endsWithZeroButNotZero($x)
+        )) return false;
+        if ($x < 10) return true;
+
+        // Reverse the number
+        $reversed = 0;
+        while ($x > $reversed) {
+            $reversed = self::appendDigitToReversedNumber($reversed, $x); 
+            $x = self::getNumberWithoutLastCharacter($x);
+        }
+
+        // Check if the number is a palindrome
+        return $x === $reversed                         ||    $x === self::getNumberWithoutLastCharacter($reversed);
+        // Ví dụ A - Số chẵn chữ số: $x == $reversed           Ví dụ B - Số lẻ chữ số: $x == intdiv($reversed, 10)
+        // 1221 => $x = 12 = $reversed = 12             ||      121 => $x = 1 = $reversed = 12 => $x === intdiv(12, 10) = 1
+    }
 }
