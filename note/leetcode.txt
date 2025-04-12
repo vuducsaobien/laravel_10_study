@@ -1,0 +1,8 @@
+http://localhost:8000/leetcode
+http://localhost:8000/draft
+
+1. Two Sum
+https://leetcode.com/problems/two-sum/
+
+2. 
+https://leetcode.com/problems/palindrome-number/description/
