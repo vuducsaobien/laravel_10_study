@@ -153,4 +153,35 @@ class HomeController extends Controller
         //     echo '<h3>Die is Called - history</h3>';die;
         // }
     }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function redis()
+    {
+        // Caching Modek Object
+        // $productKey = CacheHelper::generateKey(CacheKeysEnum::PRODUCT_BY_ID, 2);
+        // $product = Product::getFromCacheOrSet($productKey, function () {
+        //     // return Product::find(2);
+        //     // return $model->findByProductIdModel(2);
+        //     return (new Product())->findByProductIdModel(2);
+        // });
+        // echo '<pre style="color:red";>$product === '; print_r($product);echo '</pre>';
+
+        // 2.Caching Page
+        // $pageKey = CacheHelper::generateKey(CacheKeysEnum::LIST_PAGE_PRODUCTS, 1);
+        // $page1 = Product::getFromCacheOrSet($pageKey, function () {
+        //     return (new Product())->paginationPage(1);
+        // });
+        // echo '<pre style="color:red";>$page === '; print_r($page1);echo '</pre>';
+
+        // echo '<h3>Die is Called - redis</h3>';die;
+
+    }
+
+    public function draft()
+    {
+        $map[2] = 0;
+        echo '<pre style="color:red";>$map === '; print_r($map);echo '</pre>';
+    }
 }
