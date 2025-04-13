@@ -188,26 +188,23 @@ class NumberHelper
         }
         return []; // Trường hợp không tìm thấy cặp số nào
     }
-
-    // 2. Palindrome Number - Số đối xứng
+    
+    /**
+     * 13. Palindrome Number - Số đối xứng
+     * Проверяет, является ли число палиндромом.
+     * Checks if a number is a palindrome.
+     * @param int $x
+     * @return bool
+     */
     public static function isPalindrome(int $x): bool
     {
-        // Quick checks
-        if (self::isNegativeInt($x) || (
-            self::isZero($x) && self::endsWithZeroButNotZero($x)
-        )) return false;
-        if ($x < 10) return true;
-
-        // Reverse the number
-        $reversed = 0;
-        while ($x > $reversed) {
-            $reversed = self::appendDigitToReversedNumber($reversed, $x); 
-            $x = self::getNumberWithoutLastCharacter($x);
+        // Отрицательные числа не палиндромы
+        // Negative numbers are not palindromes
+        if ($x < 0) {
+            return false;
         }
 
-        // Check if the number is a palindrome
-        return $x === $reversed                         ||    $x === self::getNumberWithoutLastCharacter($reversed);
-        // Ví dụ A - Số chẵn chữ số: $x == $reversed           Ví dụ B - Số lẻ chữ số: $x == intdiv($reversed, 10)
-        // 1221 => $x = 12 = $reversed = 12             ||      121 => $x = 1 = $reversed = 12 => $x === intdiv(12, 10) = 1
+        $str = strval($x);
+        return $str === strrev($str);
     }
 }
