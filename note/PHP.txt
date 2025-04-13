@@ -1,24 +1,26 @@
 /*
 // 1. Độ phức tạp: O(1) — Nhanh nhất, truy cập trực tiếp
-isset($array[$key]);            // Kiểm tra key tồn tại và khác null
-array_key_exists($key, $arr);  // Kiểm tra key tồn tại
-$array[$key];                   // Truy cập giá trị theo key
-count($array);                  // Đếm số phần tử (PHP 7+ cực nhanh)
-is_array($var);                 // Kiểm tra kiểu dữ liệu
-is_string($var);                // Kiểm tra kiểu dữ liệu
-intdiv(int $num1, int $num2): int // Chia lấy phần nguyên
+isset($array[$key]);                : Kiểm tra key tồn tại và khác null
+array_key_exists($key, $arr);       : Kiểm tra key tồn tại
+$array[$key];                       : Truy cập giá trị theo key
+count($array);                      : Đếm số phần tử (PHP 7+ cực nhanh)
+is_array($var);                     : Kiểm tra kiểu dữ liệu
+is_string($var);                    : Kiểm tra kiểu dữ liệu
+intdiv(int $num1, int $num2): int   : Chia lấy phần nguyên
+strval(mixed $value): string        : Get string value of a variable
+strrev(string $string): string      : Reverse a string  
 
 // 2. Độ phức tạp: O(n) — Duyệt qua toàn bộ phần tử
-in_array($needle, $array);      // Tìm kiếm tuần tự
-array_search($needle, $array);  // Tìm kiếm và trả về key
-array_keys($array);             // Lấy danh sách key
-array_values($array);           // Lấy danh sách value
-array_merge($a, $b);            // Gộp 2 mảng
-json_encode($data);             // Mã hóa JSON
-json_decode($json);             // Giải mã JSON
-explode(',', $string);          // Cắt chuỗi thành mảng
-implode(',', $array);           // Nối mảng thành chuỗi
-str_split($string);             // Cắt chuỗi thành mảng
+in_array($needle, $array);          : Tìm kiếm tuần tự
+array_search($needle, $array);      : Tìm kiếm và trả về key
+array_keys($array);                 : Lấy danh sách key
+array_values($array);               : Lấy danh sách value
+array_merge($a, $b);                : Gộp 2 mảng
+json_encode($data);                 : Mã hóa JSON
+json_decode($json);                 : Giải mã JSON
+explode(',', $string);              : Cắt chuỗi thành mảng
+implode(',', $array);               : Nối mảng thành chuỗi
+str_split($string);                 : Cắt chuỗi thành mảng
 
 // 3. Độ phức tạp: O(n log n) — Thường là sắp xếp
 sort($array);                   // Sắp xếp giá trị
