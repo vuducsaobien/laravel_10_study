@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use Illuminate\Support\ServiceProvider;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class PostService extends ServiceProvider
+class PostService
 {
     const PER_PAGE = 10;
     

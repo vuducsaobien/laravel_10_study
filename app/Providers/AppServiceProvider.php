@@ -5,9 +5,21 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\PostService;
 use App\Services\UserService;
+use App\Repositories\UserRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Create a new service provider instance.
+     *
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @return void
+     */
+    public function __construct($app)
+    {
+        parent::__construct($app);
+    }
+
     /**
      * Register any application services.
      */
@@ -16,8 +28,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PostService::class, function ($app) {
             return new PostService();
         });
-        $this->app->singleton(UserService::class, function ($app) {
-            return new UserService();
+        $this->app->bind(UserRepository::class, function ($app) {
+            return new UserRepository();
+        });
+        $this->app->bind(UserService::class, function ($app) {
+            return new UserService($app->make(UserRepository::class));
         });
     }
 

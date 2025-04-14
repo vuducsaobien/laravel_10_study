@@ -2,42 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\LimixPostService;
-use App\Services\LimixUserService;
-use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
-use Exception;
 
 class BaseController extends Controller
 {
-    public function __construct()
-    {
-    }
-
-    public function responseBase($data, string $message, int $code): JsonResponse
+    /**
+     * Return success response
+     *
+     * @param mixed $data
+     * @param string $message
+     * @param int $code
+     * @return JsonResponse
+     */
+    protected function successBase($data, string $message, int $code = 200): JsonResponse
     {
         return response()->json([
+            'success' => true,
             'data' => $data,
-            'message' => $message,
-            'code' => $code
-        ]);
+            'message' => $message
+        ], $code);
     }
 
-    public function successBase($data, $message): JsonResponse
+    /**
+     * Return error response
+     *
+     * @param string $message
+     * @param int $code
+     * @return JsonResponse
+     */
+    protected function errorBase(string $message, int $code = 500): JsonResponse
     {
-        return $this->responseBase($data, $message, 200);
+        return response()->json([
+            'success' => false,
+            'message' => $message
+        ], $code);
     }
 
-    public function errorBase(string $message, int $code = 500): JsonResponse   
+    /**
+     * Default catch logic
+     *
+     * @param string $message
+     * @return JsonResponse
+     */
+    protected function getCatchLogic(string $message): JsonResponse
     {
-        return $this->responseBase([], $message, $code);
+        return $this->errorBase(__('message.user.unexpected_error_occurred', ['message' => $message]));
     }
-
-    public function notFoundBase(string $message): JsonResponse
-    {
-        return $this->responseBase([], $message, 404);
-    }
-    
-    
-
-}
+} 
