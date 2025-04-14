@@ -3,17 +3,15 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Product;
-use App\Models\UserProduct;
+use App\Models\Post;
 
-
-class UserProductSeeder extends Seeder
+class PostSeeder extends Seeder
 {
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        UserProduct::factory(20)->create();
+        Post::factory(4)->create(); // Để chắc chắn có User không có Post nào
     }
 }

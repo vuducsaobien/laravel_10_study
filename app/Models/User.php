@@ -22,67 +22,6 @@ class User extends Authenticatable
     protected $table = 'users';
     public $timestamps = FALSE;
 
-    // Relationship
-    public function finger() // One to One
-    {
-        return $this->hasOne(Finger::class, 'user_id');
-    }
-
-    public function phones() // One to Many
-    {
-        return $this->hasMany(Phone::class, 'user_id');
-    }
-
-    public function products() // Many to Many
-    {
-        return $this->belongsToMany(Product::class, 'users_products', 'user_id', 'product_id')
-        ->withPivot('quantity', 'id') // Lấy thêm cột trung gian
-        ;
-    }
-
-    public function plans() { // Has Many Through
-        return $this->hasManyThrough(
-            Plan::class,
-            Subscription::class,
-            'user_id',    // Foreign key on subscriptions table
-            'id',         // Local key on plans table
-            'id',         // Local key on users table
-            'plan_id'     // Foreign key on subscriptions table
-        )
-        ->statusActive() // = ->where('plans.status', 'active')
-        ;
-    }
-
-    public function availablePlans()
-    {
-        // return $this->plans()
-        //     ->whereHas('subscriptions', function($query) {
-        //         $query->valid(); // không dùng được vì hasManyThrough không trực tiếp lấy bảng trung gian mà chỉ đến bảng đích - plan thôi
-        // });
-        $now = '2025-05-15';
-        return $this->plans()
-            ->where('subscriptions.end_at', '>', $now)
-        ;
-    }
-
-    public function uniquePlans()
-    {
-        return $this->availablePlans()
-            ->distinct();
-    }
-
-    public function supplier() // has One Through
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function history() // has One Through
-    {
-        return $this->hasOne(History::class);
-    }
-    // End Relationship
-
-
     /**
      * The attributes that are mass assignable.
      *
@@ -90,17 +29,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'supplier_id',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
+        'email',
         // 'password',
-        // 'remember_token',
     ];
 
     /**
@@ -112,12 +42,63 @@ class User extends Authenticatable
         // 'email_verified_at' => 'datetime',
     ];
 
-    public function latestPlan()
+    // LIMIX
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        // 'password',
+        // 'remember_token',
+    ];
+
+    public static function getListUsers()
     {
-        return $this->availablePlans()
-            ->orderBy('subscriptions.id', 'desc')
-            ->first()
-        ;
+        return self::select('name', 'email')->get();
     }
+
+    public static function getListUsersPaginate(int $perPage)
+    {
+        return self::select('name', 'email')->paginate($perPage);
+    }
+
+    public static function getUserById(int $id)
+    {
+        $user = self::find($id);
+        if (!$user) {
+            return false;
+        }
+        return $user;
+    }
+
+    public static function createUser(array $data)
+    {
+        return self::create($data);
+    }
+
+    public static function updateUser(int $id, array $data)
+    {
+        $user = self::find($id);
+        if (!$user) {
+            return false;
+        }
+        return $user->update($data);
+    }
+
+    public static function deleteUser(int $id)
+    {
+        $user = self::find($id);
+        if (!$user) {
+            return false;
+        }
+        return $user->delete();
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
 
 }
