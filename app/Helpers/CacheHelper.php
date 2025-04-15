@@ -55,4 +55,18 @@ class CacheHelper
     {
         return sprintf($pattern->value, ...$params);
     }
+
+    public static function getKeys($pattern)
+    {
+        try {
+            return self::getCacheInterface()::getKeys($pattern);
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public static function flushAll()
+    {
+        return self::getCacheInterface()::flushAll();
+    }
 }

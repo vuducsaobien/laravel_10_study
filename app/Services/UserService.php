@@ -2,15 +2,14 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use PDOException;
 use Illuminate\Database\QueryException;
 use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
-
+use Throwable;
+use App\Exceptions\Handler;
 class UserService
 {
     const PER_PAGE = 10;
@@ -159,4 +158,19 @@ class UserService
             'correct' => true,
         };
     }
+
+    public function handleUserObserverAfterCreateAndUpdate(User $user)
+    {
+        try {
+            // Create new user - Cache
+            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $user->id);
+            CacheHelper::set($key, $user->toArray());
+
+            // Delete key list user
+            CacheHelper::del(CacheHelper::generateKey(CacheKeysEnum::LIST_USER));
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
+        }
+    }
+
 }

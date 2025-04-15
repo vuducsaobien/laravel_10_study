@@ -19,7 +19,6 @@ class PostService
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::LIST_POST);
         $result = Post::getFromCacheOrSet($key, function () {
-            // die('PostService - khong co Cache - getAllPosts');
             return (new Post())->getAllPosts()->toArray();
         });
 
@@ -30,7 +29,6 @@ class PostService
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::POST_BY_ID, $id);
         $result = Post::getFromCacheOrSet($key, function () use ($id) {
-            die('PostService - khong co Cache - getPostById');
             return Post::getPostById($id)->toArray();
         });
 

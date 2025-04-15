@@ -15,6 +15,7 @@ class PostObserver
     {
         $this->postService = $postService;
     }
+    
     /**
      * Handle the Post "created" event.
      */

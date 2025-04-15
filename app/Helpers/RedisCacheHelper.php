@@ -64,4 +64,29 @@ class RedisCacheHelper implements CacheInterface
             return false;
         }
     }
+
+    public static function getKeys($pattern)
+    {
+        try {
+            $redis = self::getRedis();
+            return $redis->keys($pattern);
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public static function flushAll()
+    {
+        try {
+            self::init();
+            return self::$redis->flushAll();
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    private static function getRedis()
+    {
+        return app('redis')->connection();
+    }
 }
