@@ -35,12 +35,17 @@ class UserService
         return $result;
     }
 
-    public function getUserById(int $id): Model
+    public function getUserById(int $id)
     {
-        return User::getUserById($id);
+        $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $id);
+        $result = User::getFromCacheOrSet($key, function () use ($id) {
+            return User::getUserById($id)->toArray();
+        });
+
+        return $result;
     }
 
-    public function createUser(array $data): Model
+    public function createUser(array $data)
     {
         return User::createUser($data);
     }
@@ -52,7 +57,7 @@ class UserService
         return $user;
     }
 
-    public function deleteUser(int $id): Model
+    public function deleteUser(int $id)
     {
         $user = User::findOrFail($id);
         $user->delete();

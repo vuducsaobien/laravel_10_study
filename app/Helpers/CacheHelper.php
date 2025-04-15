@@ -15,7 +15,10 @@ class CacheHelper
     public static function set($key, $value)
     {
         try {
-            return self::getCacheInterface()::set($key, $value, config('my_config.cache_time_expired'));
+            // Serialize the value if it's an array
+            $value = is_array($value) ? json_encode($value) : $value;
+            self::getCacheInterface()::set($key, $value, config('my_config.cache_time_expired'));
+            return true;
         } catch (\Exception $e) {
             return false;
         }
@@ -23,7 +26,19 @@ class CacheHelper
 
     public static function get($key)
     {
-        return self::getCacheInterface()::get($key);
+        try {
+            $value = self::getCacheInterface()::get($key);
+            // Try to decode JSON if the value is a string
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    return $decoded;
+                }
+            }
+            return $value;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public static function exists($key)
