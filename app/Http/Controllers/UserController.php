@@ -8,8 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Throwable;
 use App\Http\Request\User\CreateRequest;
 use App\Http\Request\User\UpdateRequest;
-use ArithmeticError;
-
 class UserController extends BaseController
 {
     public $userService;
@@ -124,10 +122,6 @@ class UserController extends BaseController
                     // ParseError: Invalid PHP syntax
                     $this->userService->testParseError();
                     break;
-                case 'arithmetic':
-                    // ArithmeticError: Integer overflow
-                    $this->userService->testArithmeticError();
-                    break;
                 case 'compile':
                     // CompileError: Invalid class definition
                     $this->userService->testCompileError();
@@ -146,15 +140,6 @@ class UserController extends BaseController
             return $this->successBase(null, 'Test completed successfully');
         } catch (Throwable $e) {
             $response = (new Handler(app()))->render(request(), $e);
-            // if (!$response instanceof JsonResponse) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => $e->getMessage(),
-            //         'file' => $e->getFile(),
-            //         'line' => $e->getLine(),
-            //         'code' => $e instanceof ArithmeticError ? 400 : ($e->getCode() ?: 500)
-            //     ], $e instanceof ArithmeticError ? 400 : ($e->getCode() ?: 500));
-            // }
             return $response;
         }
     }
