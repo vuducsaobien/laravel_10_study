@@ -16,7 +16,7 @@ class CreateRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'author_id' => 'required|exists:users,id',
+            'author_id' => 'integer|exists:users,id',
         ];
     }
 
@@ -28,7 +28,7 @@ class CreateRequest extends FormRequest
             'title.max' => config('messages.title.max'),
             'content.required' => config('messages.content.required'),
             'content.string' => config('messages.content.string'),
-            'author_id.required' => config('messages.author_id.required'),
+            'author_id.integer' => config('messages.author_id.integer'),
             'author_id.exists' => config('messages.author_id.exists'),
         ];
     }

@@ -4,10 +4,16 @@ return [
     'user' => [
         'retrieved_successfully' => 'User retrieved successfully',
         'unexpected_error_occurred' => 'Unexpected error occurred: :message',
+        'created_successfully' => 'User created successfully',
+        'updated_successfully' => 'User updated successfully',
+        'deleted_successfully' => 'User deleted successfully',
     ],
     'post' => [
         'retrieved_successfully' => 'Post retrieved successfully',
         'unexpected_error_occurred' => 'Unexpected error occurred: :message',
+        'created_successfully' => 'Post created successfully',
+        'updated_successfully' => 'Post updated successfully',
+        'deleted_successfully' => 'Post deleted successfully',
     ],
     'error' => [
         'type_error_occurred' => '2 - Type error occurred: :message',

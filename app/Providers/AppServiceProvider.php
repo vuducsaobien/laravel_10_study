@@ -8,6 +8,9 @@ use App\Services\UserService;
 use App\Repositories\UserRepository;
 use App\Models\User;
 use App\Observers\UserObserver;
+use App\Models\Post;
+use App\Observers\PostObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,5 +47,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         User::observe(UserObserver::class);
+        Post::observe(PostObserver::class);
     }
 }

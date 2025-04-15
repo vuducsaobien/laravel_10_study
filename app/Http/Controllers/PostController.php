@@ -7,6 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Exception;
 use App\Http\Request\Post\CreateRequest;
 use App\Http\Request\Post\UpdateRequest;
+use Throwable;
+use App\Exceptions\Handler;
 class PostController extends BaseController
 {
     public $postService;
@@ -22,11 +24,11 @@ class PostController extends BaseController
     public function getListPosts(): JsonResponse
     {
         try {
-            $result = $this->postService->getAllPostsPaginate();
+            $result = $this->postService->getAllPosts();
             
-            return $this->successBase($result, config('messages.post.retrieved_successfully'));
-        } catch (Exception $e) {
-            return $this->errorBase(config('messages.post.unexpected_error_occurred'), 500);
+            return $this->successBase($result, __('message.post.retrieved_successfully'));
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -38,9 +40,9 @@ class PostController extends BaseController
         try {
             $result = $this->postService->getPostById($id);
             
-            return $this->successBase($result, config('messages.post.retrieved_successfully'));
-        } catch (Exception $e) {
-            return $this->errorBase(config('messages.post.unexpected_error_occurred'), 500);
+            return $this->successBase($result, __('message.post.retrieved_successfully'));
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -53,9 +55,9 @@ class PostController extends BaseController
             $params = $request->all();
             $result = $this->postService->createPost($params);
             
-            return $this->successBase($result, config('messages.post.created_successfully'));
-        } catch (Exception $e) {
-            return $this->errorBase(config('messages.post.unexpected_error_occurred'), 500);
+            return $this->successBase($result, __('message.post.created_successfully'));
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -68,9 +70,9 @@ class PostController extends BaseController
             $params = $request->all();
             $result = $this->postService->updatePost($id, $params);
             
-            return $this->successBase($result, config('messages.post.updated_successfully'));
-        } catch (Exception $e) {
-            return $this->errorBase(config('messages.post.unexpected_error_occurred'), 500);
+            return $this->successBase($result, __('message.post.updated_successfully'));
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -82,9 +84,9 @@ class PostController extends BaseController
         try {
             $result = $this->postService->deletePost($id);
             
-            return $this->successBase($result, config('messages.post.deleted_successfully'));
-        } catch (Exception $e) {
-            return $this->errorBase(config('messages.post.unexpected_error_occurred'), 500);
+            return $this->successBase($result, __('message.post.deleted_successfully'));
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 }
