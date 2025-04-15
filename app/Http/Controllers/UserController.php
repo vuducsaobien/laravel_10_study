@@ -3,28 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Services\UserService;
-use App\Traits\HandleException;
+use App\Exceptions\Handler;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 use App\Http\Request\User\CreateRequest;
 use App\Http\Request\User\UpdateRequest;
-use Exception;
+use ArithmeticError;
 
 class UserController extends BaseController
 {
-    use HandleException;
-
     public $userService;
 
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-    }
-
-    public function home(): JsonResponse
-    {
-        die('Hello World');
-        // return $this->successBase('Hello World', 'Welcome to the Laravel 10 Study');
     }
 
     /**
@@ -36,7 +28,7 @@ class UserController extends BaseController
             $result = $this->userService->getListUsers();
             return $this->successBase($result, __('message.user.retrieved_successfully'));
         } catch (Throwable $e) {
-            return $this->handleException($e);
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -50,7 +42,7 @@ class UserController extends BaseController
             $result = $this->userService->getUserById($id);
             return $this->successBase($result, __('message.user.retrieved_successfully'));
         } catch (Throwable $e) {
-            return $this->handleException($e);
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -65,7 +57,7 @@ class UserController extends BaseController
             
             return $this->successBase($result, 'User created successfully');
         } catch (Throwable $e) {
-            return $this->handleException($e);
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -80,7 +72,7 @@ class UserController extends BaseController
             
             return $this->successBase($result, 'User updated successfully');
         } catch (Throwable $e) {
-            return $this->handleException($e);
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -93,7 +85,7 @@ class UserController extends BaseController
             $result = $this->userService->deleteUser($id);
             return $this->successBase($result, 'User deleted successfully');
         } catch (Throwable $e) {
-            return $this->handleException($e);
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 
@@ -114,7 +106,7 @@ class UserController extends BaseController
                 case 'argument':
                     // ArgumentCountError: Missing required parameter
                     // Using a function that requires multiple parameters
-                    $this->userService->updateUser();
+                    $this->userService->updateUser(1, []); // Fixed: Added required parameters
                     break;
                 case 'pdo':
                     // PDOException: Database connection error
@@ -153,7 +145,17 @@ class UserController extends BaseController
             }
             return $this->successBase(null, 'Test completed successfully');
         } catch (Throwable $e) {
-            return $this->handleException($e);
+            $response = (new Handler(app()))->render(request(), $e);
+            // if (!$response instanceof JsonResponse) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => $e->getMessage(),
+            //         'file' => $e->getFile(),
+            //         'line' => $e->getLine(),
+            //         'code' => $e instanceof ArithmeticError ? 400 : ($e->getCode() ?: 500)
+            //     ], $e instanceof ArithmeticError ? 400 : ($e->getCode() ?: 500));
+            // }
+            return $response;
         }
     }
 }
