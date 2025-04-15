@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Repositories\UserRepository;
-use Exception;
 use PDOException;
 use Illuminate\Database\QueryException;
+use App\Helpers\CacheHelper;
+use App\Enum\CacheKeysEnum;
 
 class UserService
 {
@@ -24,10 +25,14 @@ class UserService
     /**
      * Get List Users
      */
-    public function getListUsers(): Collection
+    public function getListUsers()
     {
-        // return User::getListUsersPaginate(self::PER_PAGE);
-        return User::getListUsers();
+        $key = CacheHelper::generateKey(CacheKeysEnum::LIST_USER);
+        $result = User::getFromCacheOrSet($key, function () {
+            return (new User())->getListUsers()->toArray();
+        });
+
+        return $result;
     }
 
     public function getUserById(int $id): Model
@@ -40,14 +45,18 @@ class UserService
         return User::createUser($data);
     }
 
-    public function updateUser(int $id, array $data): Model
+    public function updateUser(int $id, array $params): User
     {
-        return User::updateUser($id, $data);
+        $user = User::findOrFail($id);
+        $user->update($params);
+        return $user;
     }
 
     public function deleteUser(int $id): Model
     {
-        return User::deleteUser($id);
+        $user = User::findOrFail($id);
+        $user->delete();
+        return $user;
     }
 
     /**

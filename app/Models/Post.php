@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class Post extends Model
+use App\Models\BaseModel;
+class Post extends BaseModel
 {
     use HasFactory;
     // Mỗi bài viết phải có title, content, authorId, createdAt, updatedAt
