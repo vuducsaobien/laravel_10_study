@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\Post;
-use App\Models\User;
 use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
 use App\Services\PostService;

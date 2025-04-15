@@ -139,8 +139,7 @@ class UserController extends BaseController
             }
             return $this->successBase(null, 'Test completed successfully');
         } catch (Throwable $e) {
-            $response = (new Handler(app()))->render(request(), $e);
-            return $response;
+            return (new Handler(app()))->render(request(), $e);
         }
     }
 }
