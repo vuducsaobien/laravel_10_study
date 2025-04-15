@@ -22,6 +22,8 @@ services:
     volumes:
       - .:/var/www/laravel_10_study:delegated
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./storage:/var/www/laravel_10_study/storage:delegated
+      - ./bootstrap/cache:/var/www/laravel_10_study/bootstrap/cache:delegated
     depends_on:
       - mariadb
       - redis
@@ -32,7 +34,7 @@ services:
     image: 'mariadb:11.5.2'
     command: --max_allowed_packet=2048M
     ports:
-      - '${FORWARD_DB_PORT:-3309}:3306'
+      - '3309:3306'
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'

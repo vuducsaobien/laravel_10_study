@@ -18,7 +18,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Redis extension
-# RUN pecl install redis && docker-php-ext-enable redis
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Install Xdebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug
@@ -37,13 +37,15 @@ RUN composer install
 
 # Create storage directory structure
 RUN mkdir -p /var/www/laravel_10_study/storage/logs \
-    && mkdir -p /var/www/laravel_10_study/storage/framework/{sessions,views,cache} \
+    && mkdir -p /var/www/laravel_10_study/storage/framework/sessions \
+    && mkdir -p /var/www/laravel_10_study/storage/framework/views \
+    && mkdir -p /var/www/laravel_10_study/storage/framework/cache \
     && mkdir -p /var/www/laravel_10_study/bootstrap/cache
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/laravel_10_study \
-    && chmod -R 775 /var/www/laravel_10_study/storage \
-    && chmod -R 775 /var/www/laravel_10_study/bootstrap/cache
+    && chmod -R 777 /var/www/laravel_10_study/storage \
+    && chmod -R 777 /var/www/laravel_10_study/bootstrap/cache
 
 # Expose port 9000
 EXPOSE 9000

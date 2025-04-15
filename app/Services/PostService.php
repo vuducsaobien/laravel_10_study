@@ -2,51 +2,57 @@
 
 namespace App\Services;
 
-use Illuminate\Support\ServiceProvider;
 use App\Models\Post;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-
-class PostService extends ServiceProvider
+use App\Helpers\CacheHelper;
+use App\Enum\CacheKeysEnum;
+use Throwable;
+use App\Exceptions\Handler;
+class PostService
 {
     const PER_PAGE = 10;
     
     /**
      * Get All Posts
      */
-    public static function getAllPosts()
+    public function getAllPosts()
     {
-        return Post::with('author')->get();
+        $key = CacheHelper::generateKey(CacheKeysEnum::LIST_POST);
+        $result = Post::getFromCacheOrSet($key, function () {
+            return (new Post())->getAllPosts()->toArray();
+        });
+
+        return $result;
     }
 
-    /**
-     * Get All Posts
-     */
-    public static function getAllPostsPaginate(int $perPage)
+    public function getPostById(int $id)
     {
-        return Post::with('author')->paginate($perPage);
+        $key = CacheHelper::generateKey(CacheKeysEnum::POST_BY_ID, $id);
+        $result = Post::getFromCacheOrSet($key, function () use ($id) {
+            return Post::getPostById($id)->toArray();
+        });
+
+        return $result;
     }
 
-    public static function getPostById(int $id): ?Model
-    {
-        return Post::with('author')->find($id);
-    }
-
-    public static function createPost(array $data): Model
+    public function createPost(array $data): Model
     {
         return Post::create($data);
     }
 
-    public static function updatePost(int $id, array $data): bool
+    public function updatePost(int $id, array $data): bool
     {
         $post = Post::find($id);
         if (!$post) {
             return false;
         }
+        if (!isset($data['author_id'])) {
+            $data['author_id'] = NULL;
+        }
         return $post->update($data);
     }
 
-    public static function deletePost(int $id): bool
+    public function deletePost(int $id): bool
     {
         $post = Post::find($id);
         if (!$post) {
@@ -54,4 +60,20 @@ class PostService extends ServiceProvider
         }
         return $post->delete();
     }
+
+    public function handlePostObserverAfterCreateAndUpdate(Post $post)
+    {
+        try {
+            // Create new post - Cache
+            $key = CacheHelper::generateKey(CacheKeysEnum::POST_BY_ID, $post->id);
+            $post->load('author');
+            CacheHelper::set($key, $post->toArray());
+    
+            // Delete key list post
+            CacheHelper::del(CacheHelper::generateKey(CacheKeysEnum::LIST_POST));
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
+        }
+    }
+
 }

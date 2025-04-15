@@ -7,15 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Finger;
-use App\Models\Phone;
-use App\Models\Plan;
-use App\Models\Subscription;
-use App\Models\Supplier;
-use App\Models\History;
-use Illuminate\Support\Carbon;
-
-class User extends Authenticatable
+use App\Models\BaseModel;
+class User extends BaseModel
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -56,11 +49,6 @@ class User extends Authenticatable
     public static function getListUsers()
     {
         return self::select('name', 'email')->get();
-    }
-
-    public static function getListUsersPaginate(int $perPage)
-    {
-        return self::select('name', 'email')->paginate($perPage);
     }
 
     public static function getUserById(int $id)

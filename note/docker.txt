@@ -3,3 +3,9 @@ docker-compose.yml
 nginx.conf
 .dockerignore
 .env
+    Dbeaver 2 : connected
+    Host: localhost
+    Port: 3309
+    Database: laravel_10_study
+    Username: root_abc
+    Password: root_abc_password
