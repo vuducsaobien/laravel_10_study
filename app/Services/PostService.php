@@ -15,7 +15,7 @@ class PostService
     /**
      * Get All Posts
      */
-    public static function getAllPosts()
+    public function getAllPosts()
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::LIST_POST);
         $result = Post::getFromCacheOrSet($key, function () {
@@ -26,7 +26,7 @@ class PostService
         return $result;
     }
 
-    public static function getPostById(int $id)
+    public function getPostById(int $id)
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::POST_BY_ID, $id);
         $result = Post::getFromCacheOrSet($key, function () use ($id) {
@@ -37,12 +37,12 @@ class PostService
         return $result;
     }
 
-    public static function createPost(array $data): Model
+    public function createPost(array $data): Model
     {
         return Post::create($data);
     }
 
-    public static function updatePost(int $id, array $data): bool
+    public function updatePost(int $id, array $data): bool
     {
         $post = Post::find($id);
         if (!$post) {
@@ -54,7 +54,7 @@ class PostService
         return $post->update($data);
     }
 
-    public static function deletePost(int $id): bool
+    public function deletePost(int $id): bool
     {
         $post = Post::find($id);
         if (!$post) {
@@ -63,7 +63,7 @@ class PostService
         return $post->delete();
     }
 
-    public static function handlePostObserverAfterCreateAndUpdate(Post $post)
+    public function handlePostObserverAfterCreateAndUpdate(Post $post)
     {
         try {
             // Create new post - Cache

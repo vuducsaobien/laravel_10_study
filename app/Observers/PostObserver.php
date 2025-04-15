@@ -9,12 +9,18 @@ use App\Enum\CacheKeysEnum;
 use App\Services\PostService;
 class PostObserver
 {
+    public $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
     /**
      * Handle the Post "created" event.
      */
     public function created(Post $post): void
     {
-        PostService::handlePostObserverAfterCreateAndUpdate($post);
+        $this->postService->handlePostObserverAfterCreateAndUpdate($post);
     }
 
     /**
@@ -22,7 +28,7 @@ class PostObserver
      */
     public function updated(Post $post): void
     {
-        PostService::handlePostObserverAfterCreateAndUpdate($post);
+        $this->postService->handlePostObserverAfterCreateAndUpdate($post);
     }
 
     /**
