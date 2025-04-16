@@ -192,4 +192,4 @@ php artisan key:generate
 - Url
     + http://localhost:8000/     * Laravel web browser
     + http://localhost:8080/     * Memcached UI web browser
-    + 
+    + http://localhost:8081/     * Php My Admin

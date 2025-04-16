@@ -87,6 +87,21 @@ services:
     depends_on:
       - memcached
     restart: always
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: DB_phpmyadmin
+    ports:
+      - '${FORWARD_PHPMYADMIN_PORT:-8081}:80'
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+      - PMA_USER=${DB_USERNAME}
+      - PMA_PASSWORD=${DB_PASSWORD}
+    networks:
+      - laravel_10_study
+    depends_on:
+      - mariadb
+    restart: always
 networks:
   laravel_10_study:
     driver: bridge
