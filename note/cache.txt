@@ -14,6 +14,13 @@
             + Kết nối tới Cache - Redis thành công thì làm gì
 - Dùng Redis UI như Redis Insight để test
     + Nhớ key họ có thể đổi tên, nên chỉ chú ý đến value thôi
+
+- Redis :
+    + UI: Redis Insight (UI dành cho Window)
+- Memcached 
+    + MEMCACHED_ADMIN (Web browser)
     
 Memcached
     - docker-compose up -d
+    - docker-compose up -d : PHPMEMCACHEDADMIN : http://localhost:8080
+    - Khi dùng Memcached phải start 2 container : memcached & memcached_admin

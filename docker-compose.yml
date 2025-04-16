@@ -71,6 +71,19 @@ services:
     networks:
       - laravel_10_study
     restart: always
+  memcacheadmin:
+    image: hatamiarash7/memcached-admin
+    container_name: laravel_memcacheadmin
+    ports:
+      - '${FORWARD_MEMCACHEDADMIN_PORT:-8080}:80'
+    environment:
+      - MEMCACHED_HOST=memcached
+      - MEMCACHED_PORT=11211
+    networks:
+      - laravel_10_study
+    depends_on:
+      - memcached
+    restart: always
 networks:
   laravel_10_study:
     driver: bridge
