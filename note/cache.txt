@@ -15,3 +15,5 @@
 - Dùng Redis UI như Redis Insight để test
     + Nhớ key họ có thể đổi tên, nên chỉ chú ý đến value thôi
     
+Memcached
+    - docker-compose up -d

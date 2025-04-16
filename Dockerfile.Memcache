@@ -1,0 +1,12 @@
+FROM memcached:1.6-alpine
+
+# Set memory limit and other configurations
+ENV MEMCACHED_MEMORY=64m
+ENV MEMCACHED_MAX_CONNECTIONS=1024
+ENV MEMCACHED_MAX_ITEM_SIZE=1m
+
+# Expose default Memcached port
+EXPOSE 11211
+
+# Run Memcached with custom configuration
+CMD ["memcached", "-m", "64", "-c", "1024", "-I", "1m"] 

@@ -61,6 +61,16 @@ services:
     networks:
       - laravel_10_study
     restart: always
+  memcached:
+    build:
+      context: .
+      dockerfile: Dockerfile.Memcache
+    container_name: laravel_memcached
+    ports:
+      - '${FORWARD_MEMCACHED_PORT:-11211}:11211'
+    networks:
+      - laravel_10_study
+    restart: always
 networks:
   laravel_10_study:
     driver: bridge
