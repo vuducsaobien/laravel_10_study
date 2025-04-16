@@ -188,3 +188,8 @@ chmod 664 /var/www/laravel_10_study/storage/logs/laravel.log
 
 Hoặc excute vào Container laravel_10_study-1 chạy các lệnh trên
 php artisan key:generate
+
+- Url
+    + http://localhost:8000/     * Laravel web browser
+    + http://localhost:8080/     * Memcached UI web browser
+    + 

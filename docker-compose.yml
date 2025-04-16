@@ -2,6 +2,7 @@ version: '3.8'
 services:
   nginx:
     image: nginx:latest
+    container_name: nginx_container_name
     ports:
       - "8000:80"
       # - "443:443"
@@ -17,6 +18,7 @@ services:
     build:
       context: . 
       dockerfile: Dockerfile
+    container_name: laravel_10_study_1
     ports:
       - "8900:9000"  
     volumes:
@@ -36,6 +38,7 @@ services:
     restart: always
   mariadb:
     image: 'mariadb:11.5.2'
+    container_name: DB_mariadb
     command: --max_allowed_packet=2048M
     ports:
       - '${FORWARD_DB_PORT:-3309}:3306'
@@ -53,7 +56,7 @@ services:
     restart: always
   redis:
     image: redis:alpine
-    container_name: laravel_redis
+    container_name: redis
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
@@ -65,7 +68,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Memcache
-    container_name: laravel_memcached
+    container_name: memcached_1
     ports:
       - '${FORWARD_MEMCACHED_PORT:-11211}:11211'
     networks:
@@ -73,7 +76,7 @@ services:
     restart: always
   memcacheadmin:
     image: hatamiarash7/memcached-admin
-    container_name: laravel_memcacheadmin
+    container_name: memcache_admin_ui
     ports:
       - '${FORWARD_MEMCACHEDADMIN_PORT:-8080}:80'
     environment:
