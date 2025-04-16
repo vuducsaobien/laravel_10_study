@@ -8,6 +8,17 @@ use Illuminate\Http\JsonResponse;
 use Throwable;
 use App\Http\Request\User\CreateRequest;
 use App\Http\Request\User\UpdateRequest;
+
+/**
+ * @OA\Info(
+ *     version="1.0.0",
+ *     title="Blog Post API Documentation",
+ *     description="API documentation for Blog Post application",
+ *     @OA\Contact(
+ *         email="admin@example.com"
+ *     )
+ * )
+ */
 class UserController extends BaseController
 {
     public $userService;
@@ -18,8 +29,13 @@ class UserController extends BaseController
     }
 
     /**
-     * Get List Users
-     */
+    * @OA\Get(
+    *     path="/api/users",
+    *     tags={"User"},
+    *     summary="Get List Users",
+    *     @OA\Response(response=200, description="Success")
+    * )
+    */
     public function getListUsers(): JsonResponse
     {
         try {

@@ -1,0 +1,54 @@
+- Web browser UI note
+    + https://app.swaggerhub.com
+    + Api Key:
+    + Create project :
+    + Create Template :
+    + Project Members :
+
+- Install
+    + 1. composer require "darkaonline/l5-swagger"
+    + 2. Publish file config : php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+    
+    + 3. Thêm các dòng sau vào
+        A.
+        /**
+        * @OA\Info(
+        *     version="1.0.0",
+        *     title="Blog Post API Documentation",
+        *     description="API documentation for Blog Post application",
+        *     @OA\Contact(
+        *         email="admin@example.com"
+        *     )
+        * )
+        */
+        class UserController extends BaseController
+
+        B.
+        * @OA\Get(
+        *     path="/api/users",
+        *     tags={"User"},
+        *     summary="Get List Users",
+        *     @OA\Response(response=200, description="Success")
+        * )
+        */
+        public function getListUsers(): JsonResponse
+
+    + 4. Generate Swagger UI : php artisan l5-swagger:generate 
+    => generate ra file api-docs.json trong storage/api-docs
+
+    + 4. Access : http://your-domain.com/api/documentation
+    (http://localhost:8000/api/documentation)
+
+
+
+- Export Collection Postman
+    => Collection v2.1 : File: Test Limix.postman_collection
+
+    hãy kiểm tra xem package đã được cài đặt đúng chưa:
+    composer show darkaonline/l5-swagger
+
+    Hãy kiểm tra xem thư mục storage có quyền ghi không:
+    mkdir -p storage/api-docs
+
+    Hãy thử chạy lệnh generate với verbose mode để xem lỗi chi tiết:
+    php artisan l5-swagger:generate -v
