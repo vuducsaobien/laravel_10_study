@@ -22,6 +22,28 @@
                     }
                 }
             }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get User By Id",
+                "operationId": "8242536d482e67ca1a4607f836f473fe",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
         }
     },
     "tags": [

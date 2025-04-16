@@ -39,7 +39,11 @@
     + 4. Access : http://your-domain.com/api/documentation
     (http://localhost:8000/api/documentation)
 
-
+    + 5. Mỗi lần thêm 1 function API hoặc chỉnh sửa input, output 
+    phải chạy lệnh 
+        php artisan l5-swagger:generate 
+    để cập nhật lại
+    file api-docs.json + http://your-domain.com/api/documentation lại
 
 - Export Collection Postman
     => Collection v2.1 : File: Test Limix.postman_collection

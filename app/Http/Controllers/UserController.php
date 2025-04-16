@@ -47,8 +47,13 @@ class UserController extends BaseController
     }
 
     /**
-     * int $id
-     * Get User By Id
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     tags={"User"},
+     *     summary="Get User By Id",
+     *     @OA\Parameter(name="id", in="path", required=true, description="User ID"),
+     *     @OA\Response(response=200, description="Success")
+     * )
      */
     public function getUserById(int $id): JsonResponse
     {
