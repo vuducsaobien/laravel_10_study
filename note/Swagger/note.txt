@@ -56,3 +56,11 @@
 
     Hãy thử chạy lệnh generate với verbose mode để xem lỗi chi tiết:
     php artisan l5-swagger:generate -v
+
+- Run lại 
+    php artisan l5-swagger:generate
+- Vào 
+    http://localhost:8000/api/documentation
+- Ấn nút 
+    Authorize => thêm X_API_KEY=limix_duc_api_key
+- 

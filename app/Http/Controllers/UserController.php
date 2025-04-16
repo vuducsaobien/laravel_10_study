@@ -33,7 +33,9 @@ class UserController extends BaseController
     *     path="/api/users",
     *     tags={"User"},
     *     summary="Get List Users",
-    *     @OA\Response(response=200, description="Success")
+    *     security={{"apiKey":{}}},
+    *     @OA\Response(response=200, description="Success"),
+    *     @OA\Response(response=401, description="Unauthenticated")
     * )
     */
     public function getListUsers(): JsonResponse
@@ -51,8 +53,11 @@ class UserController extends BaseController
      *     path="/api/users/{id}",
      *     tags={"User"},
      *     summary="Get User By Id",
+     *     security={{"apiKey":{}}},
      *     @OA\Parameter(name="id", in="path", required=true, description="User ID"),
-     *     @OA\Response(response=200, description="Success")
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=404, description="User not found")
      * )
      */
     public function getUserById(int $id): JsonResponse
