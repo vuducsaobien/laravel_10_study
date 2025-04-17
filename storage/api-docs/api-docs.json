@@ -14,7 +14,7 @@
             "description": "Local Development Server"
         },
         {
-            "url": "https://7df1-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app",
+            "url": "https://83cf-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app",
             "description": "Ngrok Tunnel Server"
         },
         {
@@ -29,6 +29,18 @@
                 ],
                 "summary": "Get List Users",
                 "operationId": "26b68341036642eed7c31c7ca9dafa03",
+                "parameters": [
+                    {
+                        "name": "ngrok-skip-browser-warning",
+                        "in": "header",
+                        "description": "Required for ngrok requests",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "default": "true"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"

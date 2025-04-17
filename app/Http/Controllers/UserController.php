@@ -42,6 +42,13 @@ class UserController extends BaseController
     *     tags={"User"},
     *     summary="Get List Users",
     *     security={{"apiKey":{}}},
+    *     @OA\Parameter(
+    *         name="ngrok-skip-browser-warning",
+    *         in="header",
+    *         required=true,
+    *         description="Required for ngrok requests",
+    *         @OA\Schema(type="string", default="true")
+    *     ),
     *     @OA\Response(response=200, description="Success"),
     *     @OA\Response(response=401, description="Unauthenticated")
     * )

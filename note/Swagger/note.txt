@@ -123,3 +123,11 @@ https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app => http://loca
         Không cần sửa code khi URL thay đổi
         Có thể có các cấu hình khác nhau cho các môi trường khác nhau (development, staging, production)
         Tuân thủ nguyên tắc "configuration over code"
+
+    php artisan l5-swagger:generate
+    Tôi thấy khi bạn gọi API qua ngrok, 
+    nó đang trả về trang HTML của ngrok thay vì dữ liệu API. 
+    Đây là do ngrok đang chặn request. 
+    Chúng ta cần thêm header ngrok-skip-browser-warning vào request. Hãy sửa lại:
+
+    docker-compose restart
