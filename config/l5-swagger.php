@@ -18,7 +18,7 @@ return [
                 /*
                  * Edit to include full URL in ui for assets
                  */
-                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+                'use_absolute_path' => false,
 
                 /*
                 * Edit to set path where swagger ui assets should be stored
@@ -65,10 +65,10 @@ return [
              * Middleware allows to prevent unexpected access to API documentation
              */
             'middleware' => [
-                'api' => [],
-                'asset' => [],
-                'docs' => [],
-                'oauth2_callback' => [],
+                'api' => ['web'],
+                'asset' => ['web'],
+                'docs' => ['web'],
+                'oauth2_callback' => ['web'],
             ],
 
             /*
@@ -96,7 +96,7 @@ return [
             /*
              * Edit to include full URL in ui for assets
              */
-            'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+            'use_absolute_path' => false,
 
             /*
              * Absolute paths to directory containing the swagger annotations are stored.

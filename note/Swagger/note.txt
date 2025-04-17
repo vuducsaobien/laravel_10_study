@@ -131,3 +131,16 @@ https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app => http://loca
     Chúng ta cần thêm header ngrok-skip-browser-warning vào request. Hãy sửa lại:
 
     docker-compose restart
+
+
+https://395c-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app/api/documentation
+    => Trắng (Screenshot_10)
+    php artisan config:clear && php artisan cache:clear && php artisan l5-swagger:generate
+
+    php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+    => Truy cập https://395c-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app/api/documentation
+    thành công (Screenshot_11)
+
+    Đưa link 
+        https://395c-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app/api/documentation
+    cho FE test
