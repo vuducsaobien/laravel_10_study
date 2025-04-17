@@ -84,3 +84,31 @@
 - php artisan l5-swagger:generate
 https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app => http://localhost:8000 (Screenshot_3)
 => 
+
+- Screenshot_7
+    ngrok http 8000 => thành công. Phần server là gì ?
+    Tôi chạy BE http://localhost:8000/api/documentation#/User/26b68341036642eed7c31c7ca9dafa03 
+    để thử mà ? sap lại qua ngrok ?
+
+    Phần "Servers" trong Swagger UI là nơi định nghĩa URL cơ sở (base URL) 
+    cho tất cả các API endpoints. Hiện tại nó đang hiển thị URL ngrok của bạn
+    : https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app
+    
+    Để có thể test API cả ở local và qua ngrok, chúng ta nên thêm cả hai servers. 
+    Hãy sửa lại annotation trong UserController:
+
+    php artisan l5-swagger:generate
+
+    => Bây giờ khi bạn refresh Swagger UI, bạn sẽ thấy một dropdown menu "Servers" cho phép bạn chọn giữa:
+    1. http://localhost:8000 - để test trực tiếp trên local
+    2. https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app - để test thông qua ngrok
+
+    Cách sử dụng:
+    1. Chọn server bạn muốn test từ dropdown menu
+    2. Click vào nút "Authorize" và nhập API key
+    3. Thử các endpoints - request sẽ được gửi đến server bạn đã chọn
+
+    Lợi ích của việc có cả hai servers:
+        Local server: để test nhanh trong quá trình phát triển
+        Ngrok server: để chia sẻ API với người khác hoặc test từ các thiết bị/môi trường khác
+    Bạn có thể dễ dàng chuyển đổi giữa hai môi trường mà không cần thay đổi code hay cấu hình lại.

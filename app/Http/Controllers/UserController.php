@@ -19,8 +19,12 @@ use App\Http\Request\User\UpdateRequest;
  *     )
  * )
  * @OA\Server(
+ *     url="http://localhost:8000",
+ *     description="Local Development Server"
+ * )
+ * @OA\Server(
  *     url="https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app",
- *     description="API Server"
+ *     description="Ngrok Tunnel Server"
  * )
  */
 class UserController extends BaseController
