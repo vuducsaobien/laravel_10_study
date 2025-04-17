@@ -23,7 +23,7 @@ use App\Http\Request\User\UpdateRequest;
  *     description="Local Development Server"
  * )
  * @OA\Server(
- *     url="https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app",
+ *     url="https://cfa6-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app",
  *     description="Ngrok Tunnel Server"
  * )
  */
