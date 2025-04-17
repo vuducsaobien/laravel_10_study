@@ -112,3 +112,14 @@ https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app => http://loca
         Local server: để test nhanh trong quá trình phát triển
         Ngrok server: để chia sẻ API với người khác hoặc test từ các thiết bị/môi trường khác
     Bạn có thể dễ dàng chuyển đổi giữa hai môi trường mà không cần thay đổi code hay cấu hình lại.
+
+    - Config lại url của 2 servers 
+    php artisan l5-swagger:generate
+        Bây giờ, mỗi khi URL ngrok thay đổi, bạn chỉ cần:
+        Cập nhật giá trị NGROK_URL trong file .env
+        Chạy lại lệnh php artisan l5-swagger:generate
+        Lợi ích của cách này:
+        Dễ dàng quản lý và cập nhật URL
+        Không cần sửa code khi URL thay đổi
+        Có thể có các cấu hình khác nhau cho các môi trường khác nhau (development, staging, production)
+        Tuân thủ nguyên tắc "configuration over code"

@@ -292,7 +292,8 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app'),
+            'L5_SWAGGER_CONST_HOST' => env('APP_URL', 'http://localhost:8000'),
+            'NGROK_URL' => env('NGROK_URL', 'http://localhost:8000'),
         ],
     ],
 ];

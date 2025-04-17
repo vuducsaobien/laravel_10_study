@@ -19,11 +19,11 @@ use App\Http\Request\User\UpdateRequest;
  *     )
  * )
  * @OA\Server(
- *     url="http://localhost:8000",
+ *     url=L5_SWAGGER_CONST_HOST,
  *     description="Local Development Server"
  * )
  * @OA\Server(
- *     url="https://cfa6-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app",
+ *     url=NGROK_URL,
  *     description="Ngrok Tunnel Server"
  * )
  */
