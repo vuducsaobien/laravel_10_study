@@ -18,6 +18,10 @@ use App\Http\Request\User\UpdateRequest;
  *         email="admin@example.com"
  *     )
  * )
+ * @OA\Server(
+ *     url="https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app",
+ *     description="API Server"
+ * )
  */
 class UserController extends BaseController
 {

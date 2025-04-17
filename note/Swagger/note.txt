@@ -64,3 +64,23 @@
 - Ấn nút 
     Authorize => thêm X_API_KEY=limix_duc_api_key
 - 
+
+- Để có thể gọi API từ SwaggerHub.com đến localhost của bạn, bạn cần một số bước sau:
+    + composer require fruitcake/laravel-cors
+    + Để có thể truy cập API của bạn từ internet, bạn cần một dịch vụ tunnel như ngrok
+    + https://ngrok.com/download
+    + ngrok.exe 
+        - ngrok http 8000
+        -   ERROR:  authentication failed: Usage of ngrok requires a verified account and authtoken.
+            ERROR:  Sign up for an account: https://dashboard.ngrok.com/signup
+            ERROR:  Install your authtoken: https://dashboard.ngrok.com/get-started/your-authtoken
+            ERROR:  ERR_NGROK_4018
+            ERROR:  https://ngrok.com/docs/errors/err_ngrok_4018
+        - Fix
+            + ngrok config add-authtoken $YOUR_AUTHTOKEN
+            ngrok config add-authtoken 2hoy60mrtETuVa4idArczJrmHHg_5eq8zQDFq5yaBkCj7g5KB
+        - ngrok http 8000 (picture Screenshot_2)
+
+- php artisan l5-swagger:generate
+https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app => http://localhost:8000 (Screenshot_3)
+=> 

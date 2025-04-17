@@ -8,6 +8,15 @@
         },
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app",
+            "description": "API Server"
+        },
+        {
+            "url": ""
+        }
+    ],
     "paths": {
         "/api/users": {
             "get": {

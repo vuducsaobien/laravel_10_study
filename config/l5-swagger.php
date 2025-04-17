@@ -79,6 +79,11 @@ return [
 
         'paths' => [
             /*
+             * Edit to set the api's base path
+             */
+            'base' => env('L5_SWAGGER_BASE_PATH', ''),
+
+            /*
              * Absolute path to location where parsed annotations will be stored
              */
             'docs' => storage_path('api-docs'),
@@ -89,14 +94,19 @@ return [
             'views' => base_path('resources/views/vendor/l5-swagger'),
 
             /*
-             * Edit to set the api's base path
+             * Edit to include full URL in ui for assets
              */
-            'base' => env('L5_SWAGGER_BASE_PATH', null),
+            'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+
+            /*
+             * Absolute paths to directory containing the swagger annotations are stored.
+             */
+            'annotations' => [
+                base_path('app'),
+            ],
 
             /*
              * Absolute path to directories that should be excluded from scanning
-             * @deprecated Please use `scanOptions.exclude`
-             * `scanOptions.exclude` overwrites this
              */
             'excludes' => [],
         ],
@@ -282,7 +292,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app'),
         ],
     ],
 ];

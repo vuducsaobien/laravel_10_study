@@ -21,7 +21,7 @@ use App\Http\Controllers\PostController;
 */
 
 // Limix
-Route::get('/', [UserController::class, 'home'])->name('home');
+Route::get('/', [HomeController::class, 'home'])->name('home');
 
 // Route::group(['as' => 'users.', 'prefix' => 'users'], function () {
 //     Route::get('/', [UserController::class, 'getListUsers'])->name('getListUsers');
