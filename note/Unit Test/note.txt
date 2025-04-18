@@ -1,0 +1,224 @@
+docker ps
+docker exec -it laravel_10_study-laravel_10_study-1 /bin/bash
+
+Các loại test trong Laravel:
+1. Unit Tests (tests/Unit/)
+    Test các thành phần riêng lẻ, độc lập
+    Thường test các class như:
+        Services (UserServiceTest.php)
+        Repositories (UserRepositoryTest.php)
+        Models (UserTest.php)
+        Helpers, Utilities
+    Mục đích: Kiểm tra logic xử lý dữ liệu, business logic
+    Ví dụ: UserServiceTest kiểm tra các phương thức của UserService hoạt động đúng không
+
+2. Feature/Integration Tests (tests/Feature/)
+    Test các API endpoints
+    Test luồng xử lý từ đầu đến cuối
+    Thường test các class như:
+        Controllers (UserControllerTest.php)
+        API endpoints
+        Form submissions
+    Mục đích: Kiểm tra toàn bộ luồng xử lý, từ request đến response
+    Ví dụ: UserControllerTest kiểm tra các API endpoints hoạt động đúng không
+
+3. Repository Tests (nếu có tầng Repository)
+    Test các phương thức của Repository
+    Thường nằm trong tests/Unit/Repositories/
+    Mục đích: Kiểm tra việc tương tác với database
+    Ví dụ
+        // tests/Unit/Repositories/UserRepositoryTest.php
+        class UserRepositoryTest extends TestCase
+        {
+            public function test_find_by_id()
+            {
+                $user = User::factory()->create();
+                $found = $this->userRepository->findById($user->id);
+                $this->assertEquals($user->id, $found->id);
+            }
+
+            public function test_create_user()
+            {
+                $data = [
+                    'name' => 'Test User',
+                    'email' => 'test@example.com'
+                ];
+                $user = $this->userRepository->create($data);
+                $this->assertDatabaseHas('users', $data);
+            }
+        }
+4. Example Test
+    Là test mẫu được tạo tự động khi tạo project Laravel
+    Có thể xóa hoặc sửa lại để test thứ gì đó
+    Thường nằm trong tests/Unit/ExampleTest.php
+
+Cấu trúc thư mục test thường như sau:
+    tests/
+    ├── Unit/
+    │   ├── Services/
+    │   │   └── UserServiceTest.php
+    │   ├── Repositories/
+    │   │   └── UserRepositoryTest.php
+    │   ├── Models/
+    │   │   └── UserTest.php
+    │   └── ExampleTest.php
+    ├── Feature/
+    │   ├── Api/
+    │   │   └── UserControllerTest.php
+    │   └── ExampleTest.php
+    └── TestCase.php
+
+Mỗi loại test có mục đích riêng:
+    Unit Tests: Test logic nghiệp vụ, dễ debug, chạy nhanh
+    Feature Tests: Test toàn bộ luồng, đảm bảo API hoạt động đúng
+    Repository Tests: Test việc tương tác với database
+
+Bạn có thể chạy các loại test riêng biệt:
+    # 1. Chạy tất cả tests
+    php artisan test
+
+    # 2. Chạy chỉ Unit tests
+    php artisan test --testsuite=Unit
+
+    # 3. Chạy chỉ Feature tests
+    php artisan test --testsuite=Feature
+
+    # 4. Chạy test cụ thể
+    php artisan test tests/Unit/Services/UserServiceTest.php
+    php artisan test tests/Feature/Api/UserControllerTest.php
+
+    
+RUN !!
+    2. php artisan test --testsuite=Unit
+        + 
+            Screenshot_1.png
+        + 
+            Test các function riêng lẻ trong UserService (Các tầng Service)
+        +
+            Chạy file  trong tests/Unit/ExampleTest để test trước file UserServiceTest
+        + 
+            Các hàm function trong 1 file UserServiceTest là chạy riêng biệt.
+            Ví dụ trong hàm test_create_user không thể lấy $user từ đây và sử dụng ở các hàm khác được
+            Mà muốn đồng nhất phải sử dụng $user từ hàm setUp
+            protected function setUp(): void
+            {
+                parent::setUp();
+
+                $this->userService = app(UserService::class);
+                
+                // Create a test user
+                $this->user = User::factory()->create([
+                    'name' => 'Test User',
+                    'email' => 'test_unit_test_service@example.com',
+                ]);
+            }
+        + Chạy các file hàm, các file test Service trong ./tests/Unit
+
+Các hàm chính trong PHPUnit, assert = kiểm tra điều kiện, đảm bảo điều kiện
+https://docs.phpunit.de/en/12.1/assertions.html
+
+Boolean
+    assertTrue()
+    assertFalse()
+Identity
+    assertSame()
+    assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys()
+    assertArrayIsIdenticalToArrayIgnoringListOfKeys()
+Equality
+    assertEquals()  <>  assertNotEquals()
+    assertNotEqualsCanonicalizing
+    assertNotEqualsIgnoringCase
+    assertNotEqualsWithDelta
+    assertObjectNotEquals
+    assertFileEquals
+    assertArrayIsEqualToArrayOnlyConsideringListOfKeys
+    assertArrayIsEqualToArrayIgnoringListOfKeys
+Iterable
+    assertArrayHasKey
+    assertContains
+    assertContainsOnly
+    assertContainsOnlyArray
+    assertContainsOnlyBool
+    assertContainsOnlyCallable
+    assertContainsOnlyFloat
+    assertContainsOnlyInt
+    assertContainsOnlyIterable
+    assertContainsOnlyNull
+    assertContainsOnlyNumeric
+    .....
+
+assertDatabaseHas
+// Kiểm tra xem dữ liệu đã được lưu vào database chưa
+$this->assertDatabaseHas('users', [
+    'name' => $username,
+    'email' => $email
+]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

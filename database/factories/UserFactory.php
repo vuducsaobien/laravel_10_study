@@ -32,9 +32,9 @@ class UserFactory extends Factory
         return $this->afterMaking(function (User $table) {
             // ...
         })->afterCreating(function (User $table) {
-            $table->update([
-                'name' => "table User - id : {$table->id}"
-            ]);
+            // $table->update([
+            //     'name' => "table User - id : {$table->id}" // Chú ý: Sau khi tạo User qua Factory, name sẽ đổi lại
+            // ]);
         });
     }
 
