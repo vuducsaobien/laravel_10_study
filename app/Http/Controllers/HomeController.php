@@ -8,7 +8,7 @@ class HomeController extends BaseController
      */
     public function home()
     {
-        die('home 123');
+        // die('home 123');
     }
 
 }

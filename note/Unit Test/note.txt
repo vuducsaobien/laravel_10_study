@@ -87,7 +87,7 @@ Bạn có thể chạy các loại test riêng biệt:
     php artisan test tests/Unit/Services/UserServiceTest.php
     php artisan test tests/Feature/Api/UserControllerTest.php
 
-    
+
 RUN !!
     2. php artisan test --testsuite=Unit
         + 
@@ -155,7 +155,11 @@ $this->assertDatabaseHas('users', [
 ]);
 
 
-
+RUN !!!
+    Screenshot_2.png
+    Feature Tests: Test toàn bộ luồng, đảm bảo API hoạt động đúng
+    docker exec -it laravel_10_study-laravel_10_study-1 /bin/bash
+    php artisan test --testsuite=Feature
 
 
 
