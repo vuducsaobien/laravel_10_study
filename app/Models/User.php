@@ -48,7 +48,7 @@ class User extends BaseModel
 
     public static function getListUsers()
     {
-        return self::select('name', 'email')->get();
+        return self::select('id', 'name', 'email')->get();
     }
 
     public static function getUserById(int $id)

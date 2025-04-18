@@ -1,0 +1,84 @@
+BACKEND DEVELOPER TEST 
+Đề bài: Blog Post API Prototype    
+Các chức năng cần có:
+    
+1. Users    
+	GET /users – Lấy danh sách người dùng    
+	POST /users – Tạo người dùng mới    
+	GET /users/:id – Lấy thông tin 1 người dùng    
+	PUT /users/:id – Cập nhật người dùng    
+	DELETE /users/:id – Xoá người dùng  
+	
+2. Posts    
+	GET /posts – Lấy danh sách bài viết    
+	POST /posts – Tạo bài viết mới (gắn với user)    
+	GET /posts/:id – Lấy thông tin bài viết    
+	PUT /posts/:id – Cập nhật bài viết    
+	DELETE /posts/:id – Xoá bài viết
+
+Yêu cầu thêm:    
+	Mỗi bài viết phải có title, content, authorId, createdAt, updatedAt    
+	Mỗi người dùng phải có name, email    
+	Validate dữ liệu đầu vào    
+	Error handling đầy đủ    
+	Yêu cầu kỹ thuật:    
+	Có thể chọn PHP Laravel
+
+	Lưu dữ liệu tạm thời trong RAM (mảng) hoặc dùng SQLite / PostgreSQL / MongoDB (nếu muốn show 
+	DB skill)    
+	Không cần viết test hoặc auth (nếu không yêu cầu thêm) 
+
+=> Kết quả FAILED
+=> Feedback:
+
+Điểm mạnh
+    1. Kiến trúc phân lớp rõ ràng:
+    * Phân tách thành Controller, Service, Repository theo đúng nguyên tắc separation of concerns
+    * Dependency Injection qua constructor trong Service layers
+
+    2. Sử dụng Service Provider hiệu quả:
+    * Đăng ký các services và repositories qua AppServiceProvider
+    * Binding các dependencies trong container
+
+    3. Caching thông minh:
+    * Triển khai caching cho các queries thường xuyên sử dụng
+    * Sử dụng cache keys thông qua Enum class
+
+    4. Error handling:
+    * SafeRedisManager xử lý lỗi Redis connection
+    * Có nhiều phương thức test cho các exception khác nhau
+
+    5. Database migrations chuẩn:
+    * Khai báo foreign key relationship giữa posts và users
+    * Schema rõ ràng và có nullable constraints
+
+    6. API routes đầy đủ:
+    * Tất cả endpoints theo yêu cầu đã được triển khai
+    * Sử dụng middleware api.key cho bảo mật
+    * Đặt tên route theo chuẩn RESTful
+    
+    7 Observers pattern:
+    * Sử dụng Observer cho User và Post models
+    * Tự động cập nhật cache khi entity thay đổi
+
+Điểm cần cải thiện
+    1. Thiếu request validation:
+    * Chưa thấy triển khai Form Request classes hoặc validation rules
+
+    2. Chưa có API documentation:
+    * Nên thêm OpenAPI/Swagger cho documentation
+
+    3. Cache management chưa tối ưu:
+    * Cache invalidation chỉ xóa các key chính, có thể gây memory leak
+
+    4. Hard-coding một số giá trị:
+    * PER_PAGE = 10 hardcoded thay vì configuration
+
+    5. Thiếu unit/integration tests:
+    * Không thấy triển khai tests (mặc dù không yêu cầu)
+
+    6. Exception testing methods:
+    * Một số phương thức testing exception không thực sự cần thiết trong production code
+
+    7. Model-Service-Repository sử dụng không nhất quán:
+    * Một số nơi gọi trực tiếp Model, một số nơi qua Repository

@@ -55,6 +55,20 @@ services:
       - "6379:6379"
     networks:
       - laravel_10_study
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger_ui
+    ports:
+      - "8082:8080"
+    environment:
+      - SWAGGER_JSON=/api-docs/swagger.json
+    volumes:
+      - ./storage/api-docs:/api-docs
+    networks:
+      - laravel_10_study
+    depends_on:
+      - laravel_10_study
+    restart: always
 networks:
   laravel_10_study:
     driver: bridge

@@ -8,6 +8,25 @@ use Illuminate\Http\JsonResponse;
 use Throwable;
 use App\Http\Request\User\CreateRequest;
 use App\Http\Request\User\UpdateRequest;
+
+/**
+ * @OA\Info(
+ *     version="1.0.0",
+ *     title="Blog Post API Documentation",
+ *     description="API documentation for Blog Post application",
+ *     @OA\Contact(
+ *         email="admin@example.com"
+ *     )
+ * )
+ * @OA\Server(
+ *     url=L5_SWAGGER_CONST_HOST,
+ *     description="Local Development Server"
+ * )
+ * @OA\Server(
+ *     url=NGROK_URL,
+ *     description="Ngrok Tunnel Server"
+ * )
+ */
 class UserController extends BaseController
 {
     public $userService;
@@ -18,8 +37,22 @@ class UserController extends BaseController
     }
 
     /**
-     * Get List Users
-     */
+    * @OA\Get(
+    *     path="/api/users",
+    *     tags={"User"},
+    *     summary="Get List Users",
+    *     security={{"apiKey":{}}},
+    *     @OA\Parameter(
+    *         name="ngrok-skip-browser-warning",
+    *         in="header",
+    *         required=true,
+    *         description="Required for ngrok requests",
+    *         @OA\Schema(type="string", default="true")
+    *     ),
+    *     @OA\Response(response=200, description="Success"),
+    *     @OA\Response(response=401, description="Unauthenticated")
+    * )
+    */
     public function getListUsers(): JsonResponse
     {
         try {
@@ -31,8 +64,16 @@ class UserController extends BaseController
     }
 
     /**
-     * int $id
-     * Get User By Id
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     tags={"User"},
+     *     summary="Get User By Id",
+     *     security={{"apiKey":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, description="User ID"),
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=404, description="User not found")
+     * )
      */
     public function getUserById(int $id): JsonResponse
     {
