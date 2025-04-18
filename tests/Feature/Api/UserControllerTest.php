@@ -53,134 +53,131 @@ class UserControllerTest extends TestCase
         $this->assertEquals(4, count($response->json('data'))); // 3 new users + 1 test user
     }
 
-    // public function test_get_user_by_id()
-    // {
-    //     $response = $this->withHeaders([
-    //         'X-API-KEY' => $this->apiKey
-    //     ])->getJson("/api/users/{$this->user->id}");
+    public function test_get_user_by_id()
+    {
+        $response = $this->withHeaders([
+            'X-API-KEY' => $this->apiKey
+        ])->getJson("/api/users/{$this->user->id}");
 
-    //     $response->assertStatus(200)
-    //             ->assertJsonStructure([
-    //                 'success',
-    //                 'message',
-    //                 'data' => [
-    //                     'id',
-    //                     'name',
-    //                     'email',
-    //                     'created_at',
-    //                     'updated_at'
-    //                 ]
-    //             ])
-    //             ->assertJsonPath('data.name', 'Test User')
-    //             ->assertJsonPath('data.email', 'test@example.com');
-    // }
+        $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'success',
+                    'message',
+                    'data' => [
+                        'id',
+                        'name',
+                        'email'
+                    ]
+                ])
+                ->assertJsonPath('data.name', $this->name)
+                ->assertJsonPath('data.email', $this->email);
+    }
 
-    // public function test_create_user()
-    // {
-    //     $userData = [
-    //         'name' => 'New User',
-    //         'email' => 'new@example.com',
-    //         'password' => 'password123'
-    //     ];
+    public function test_create_user()
+    {
+        $name = 'New User 1';
+        $email = 'new_1@example.com';
+        $userData = [
+            'name' => $name,
+            'email' => $email
+        ];
 
-    //     $response = $this->withHeaders([
-    //         'X-API-KEY' => $this->apiKey
-    //     ])->postJson('/api/users', $userData);
+        $response = $this->withHeaders([
+            'X-API-KEY' => $this->apiKey
+        ])->postJson('/api/users', $userData);
 
-    //     $response->assertStatus(200)
-    //             ->assertJsonStructure([
-    //                 'success',
-    //                 'message',
-    //                 'data' => [
-    //                     'id',
-    //                     'name',
-    //                     'email',
-    //                     'created_at',
-    //                     'updated_at'
-    //                 ]
-    //             ])
-    //             ->assertJsonPath('data.name', 'New User')
-    //             ->assertJsonPath('data.email', 'new@example.com');
+        $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'success',
+                    'message',
+                    'data' => [
+                        'id',
+                        'name',
+                        'email'
+                    ]
+                ])
+                ->assertJsonPath('data.name', $name)
+                ->assertJsonPath('data.email', $email);
 
-    //     $this->assertDatabaseHas('users', [
-    //         'name' => 'New User',
-    //         'email' => 'new@example.com'
-    //     ]);
-    // }
+        $this->assertDatabaseHas('users', [
+            'name' => $name,
+            'email' => $email
+        ]);
+    }
 
-    // public function test_update_user()
-    // {
-    //     $updateData = [
-    //         'name' => 'Updated Name',
-    //         'email' => 'updated@example.com'
-    //     ];
+    public function test_update_user()
+    {
+        $name = 'Updated Name';
+        $email = 'updated@example.com';
+        $updateData = [
+            'name' => $name,
+            'email' => $email
+        ];
 
-    //     $response = $this->withHeaders([
-    //         'X-API-KEY' => $this->apiKey
-    //     ])->putJson("/api/users/{$this->user->id}", $updateData);
+        $response = $this->withHeaders([
+            'X-API-KEY' => $this->apiKey
+        ])->putJson("/api/users/{$this->user->id}", $updateData);
 
-    //     $response->assertStatus(200)
-    //             ->assertJsonStructure([
-    //                 'success',
-    //                 'message',
-    //                 'data' => [
-    //                     'id',
-    //                     'name',
-    //                     'email',
-    //                     'created_at',
-    //                     'updated_at'
-    //                 ]
-    //             ])
-    //             ->assertJsonPath('data.name', 'Updated Name')
-    //             ->assertJsonPath('data.email', 'updated@example.com');
+        $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'success',
+                    'message',
+                    'data' => [
+                        'id',
+                        'name',
+                        'email'
+                    ]
+                ])
+                ->assertJsonPath('data.name', $name)
+                ->assertJsonPath('data.email', $email);
 
-    //     $this->assertDatabaseHas('users', [
-    //         'id' => $this->user->id,
-    //         'name' => 'Updated Name',
-    //         'email' => 'updated@example.com'
-    //     ]);
-    // }
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'name' => $name,
+            'email' => $email
+        ]);
+    }
 
-    // public function test_delete_user()
-    // {
-    //     $response = $this->withHeaders([
-    //         'X-API-KEY' => $this->apiKey
-    //     ])->deleteJson("/api/users/{$this->user->id}");
+    public function test_delete_user()
+    {
+        $response = $this->withHeaders([
+            'X-API-KEY' => $this->apiKey
+        ])->deleteJson("/api/users/{$this->user->id}");
 
-    //     $response->assertStatus(200)
-    //             ->assertJsonStructure([
-    //                 'success',
-    //                 'message',
-    //                 'data'
-    //             ])
-    //             ->assertJsonPath('success', true);
+        $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'success',
+                    'message',
+                    'data'
+                ])
+                ->assertJsonPath('success', true);
 
-    //     $this->assertDatabaseMissing('users', [
-    //         'id' => $this->user->id
-    //     ]);
-    // }
+        $this->assertDatabaseMissing('users', [
+            'id' => $this->user->id
+        ]);
+    }
 
-    // public function test_unauthorized_access()
-    // {
-    //     $response = $this->getJson('/api/users');
+    public function test_unauthorized_access() // Không có X-API-KEY
+    {
+        $response = $this->getJson('/api/users');
 
-    //     $response->assertStatus(401)
-    //             ->assertJson([
-    //                 'success' => false,
-    //                 'message' => 'Unauthorized'
-    //             ]);
-    // }
+        $response->assertStatus(401)
+                ->assertJson([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ]);
+    }
 
-    // public function test_invalid_api_key()
-    // {
-    //     $response = $this->withHeaders([
-    //         'X-API-KEY' => 'invalid_key'
-    //     ])->getJson('/api/users');
+    public function test_invalid_api_key() // X-API-KEY không giống trong env
+    {
+        $response = $this->withHeaders([
+            'X-API-KEY' => 'invalid_key'
+        ])->getJson('/api/users');
 
-    //     $response->assertStatus(401)
-    //             ->assertJson([
-    //                 'success' => false,
-    //                 'message' => 'Unauthorized'
-    //             ]);
-    // }
+        $response->assertStatus(401)
+                ->assertJson([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ]);
+    }
 } 
