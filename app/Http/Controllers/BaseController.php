@@ -37,15 +37,4 @@ class BaseController extends Controller
             'message' => $message
         ], $code);
     }
-
-    /**
-     * Default catch logic
-     *
-     * @param string $message
-     * @return JsonResponse
-     */
-    protected function getCatchLogic(string $message): JsonResponse
-    {
-        return $this->errorBase(__('message.user.unexpected_error_occurred', ['message' => $message]));
-    }
 } 

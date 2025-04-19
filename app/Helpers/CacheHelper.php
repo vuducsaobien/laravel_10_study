@@ -69,4 +69,15 @@ class CacheHelper
     {
         return self::getCacheInterface()::flushAll();
     }
+
+    public static function getFromCacheOrSet($key, $callback)
+    {
+        $value = self::get($key);
+        if (!$value) {
+            $value = $callback();
+            self::set($key, $value);
+            return $value;
+        }
+        return $value;
+    }
 }

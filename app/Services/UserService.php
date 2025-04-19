@@ -27,7 +27,7 @@ class UserService
     public function getListUsers()
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::LIST_USER);
-        $result = User::getFromCacheOrSet($key, function () {
+        $result = CacheHelper::getFromCacheOrSet($key, function () {
             return (new User())->getListUsers()->toArray();
         });
 
@@ -37,7 +37,7 @@ class UserService
     public function getUserById(int $id)
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $id);
-        $result = User::getFromCacheOrSet($key, function () use ($id) {
+        $result = CacheHelper::getFromCacheOrSet($key, function () use ($id) {
             return User::getUserById($id)->toArray();
         });
 

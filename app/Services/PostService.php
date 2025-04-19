@@ -18,7 +18,7 @@ class PostService
     public function getAllPosts()
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::LIST_POST);
-        $result = Post::getFromCacheOrSet($key, function () {
+        $result = CacheHelper::getFromCacheOrSet($key, function () {
             return (new Post())->getAllPosts()->toArray();
         });
 
@@ -28,7 +28,7 @@ class PostService
     public function getPostById(int $id)
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::POST_BY_ID, $id);
-        $result = Post::getFromCacheOrSet($key, function () use ($id) {
+        $result = CacheHelper::getFromCacheOrSet($key, function () use ($id) {
             return Post::getPostById($id)->toArray();
         });
 
