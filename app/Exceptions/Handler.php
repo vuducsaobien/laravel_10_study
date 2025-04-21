@@ -15,6 +15,9 @@ use DivisionByZeroError;
 use UnhandledMatchError;
 use Illuminate\Database\QueryException;
 use Illuminate\Testing\Exceptions\InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
+use App\Enum\HttpCodeEnum;
+
 class Handler extends ExceptionHandler
 {
     /**
@@ -69,6 +72,15 @@ class Handler extends ExceptionHandler
     {
         // Always return JSON for API requests
         if ($request->is('api/*') || $request->expectsJson()) {
+            if ($exception instanceof ValidationException) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $exception->getMessage(),
+                    'errors' => $exception->errors(),
+                    'code' => HttpCodeEnum::ERROR_CODE_VALIDATION
+                ], HttpCodeEnum::ERROR_CODE_VALIDATION);
+            }
+
             $statusCode = $this->getStatusCode($exception);
             
             return response()->json([

@@ -12,7 +12,7 @@ use App\Http\Request\User\UpdateRequest;
 use App\Exceptions\BusinessException;
 use App\Exceptions\ValidateException;
 use App\Exceptions\DatabaseException;
-
+use App\Http\Request\User\DeleteRequest;
 /**
  * @OA\Info(
  *     version="1.0.0",
@@ -41,21 +41,21 @@ class UserController extends BaseController
     }
 
     /**
-    * @OA\Get(
-    *     path="/api/users",
-    *     tags={"User"},
-    *     summary="Get List Users",
-    *     security={{"apiKey":{}}},
-    *     @OA\Parameter(
-    *         name="ngrok-skip-browser-warning",
-    *         in="header",
-    *         required=true,
-    *         description="Required for ngrok requests",
-    *         @OA\Schema(type="string", default="true")
-    *     ),
-    *     @OA\Response(response=200, description="Success"),
-    *     @OA\Response(response=401, description="Unauthenticated")
-    * )
+        * @OA\Get(
+        *     path="/api/users",
+        *     tags={"User"},
+        *     summary="Get List Users",
+        *     security={{"apiKey":{}}},
+        *     @OA\Parameter(
+        *         name="ngrok-skip-browser-warning",
+        *         in="header",
+        *         required=true,
+        *         description="Required for ngrok requests",
+        *         @OA\Schema(type="string", default="true")
+        *     ),
+        *     @OA\Response(response=200, description="Success"),
+        *     @OA\Response(response=401, description="Unauthenticated")
+        * )
     */
     public function getListUsers(): JsonResponse
     {
@@ -129,7 +129,7 @@ class UserController extends BaseController
      * @param int $id
      * @return JsonResponse
      */
-    public function deleteUser(int $id): JsonResponse
+    public function deleteUser(DeleteRequest $request, int $id): JsonResponse
     {
         try {
             $data = $this->userService->deleteUser($id);
@@ -137,12 +137,10 @@ class UserController extends BaseController
                 return $this->errorBase($data['message'], HttpCodeEnum::ERROR_CODE_BUSSINESS);
             }
             return $this->successBase($data);
-        } catch (ValidateException $e) {
-            return $this->errorBase($e->getMessage(), $e->getCode());
         } catch (DatabaseException $e) {
-            return $this->errorBase($e->getMessage(), $e->getCode());
+            return $this->errorBase($e->getMessage(), HttpCodeEnum::ERROR_CODE_DATABASE);
         } catch (BusinessException $e) {
-            return $this->errorBase($e->getMessage(), $e->getCode());
+            return $this->errorBase($e->getMessage(), HttpCodeEnum::ERROR_CODE_BUSSINESS);
         } catch (Throwable $e) {
             return (new Handler(app()))->render(request(), $e);
         }
