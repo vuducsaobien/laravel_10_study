@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,17 +15,6 @@ use App\Http\Controllers\PostController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// Route::get('/', function () {
-//     return response()->json([
-//         'message' => 'Hello World',
-//         'status' => 'success'
-//     ]);
-// });
 
 Route::middleware(['api.key'])->group(function () {
     Route::group(['as' => 'users.', 'prefix' => 'users'], function () {
@@ -45,7 +34,10 @@ Route::middleware(['api.key'])->group(function () {
     });
 
     Route::group(['as' => 'test-exception.', 'prefix' => 'test-exception'], function () {
-        Route::get('/{type}', [UserController::class, 'testExceptions'])->name('testExceptions');
+        Route::delete('/validate', [TestController::class, 'testValidateException'])->name('testValidateException');
+        Route::get('/database', [TestController::class, 'testDatabaseException'])->name('testDatabaseException');
+        Route::get('/bussiness', [TestController::class, 'testBussinessException'])->name('testBussinessException');
+        Route::get('/system', [TestController::class, 'testSystemException'])->name('testSystemException');
     });
 
 });

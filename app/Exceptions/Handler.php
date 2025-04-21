@@ -4,22 +4,11 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use TypeError;
-use ArgumentCountError;
-use PDOException;
-use ValueError;
-use ParseError;
-use ArithmeticError;
-use CompileError;
-use DivisionByZeroError;
-use UnhandledMatchError;
-use Illuminate\Database\QueryException;
-use Illuminate\Testing\Exceptions\InvalidArgumentException;
-use Illuminate\Validation\ValidationException;
-use App\Enum\HttpCodeEnum;
-
+use App\Trait\HandlesExceptions;
 class Handler extends ExceptionHandler
 {
+    use HandlesExceptions;
+
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -72,16 +61,10 @@ class Handler extends ExceptionHandler
     {
         // Always return JSON for API requests
         if ($request->is('api/*') || $request->expectsJson()) {
-            if ($exception instanceof ValidationException) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $exception->getMessage(),
-                    'errors' => $exception->errors(),
-                    'code' => HttpCodeEnum::ERROR_CODE_VALIDATION
-                ], HttpCodeEnum::ERROR_CODE_VALIDATION);
-            }
+            // dd($exception);
+            // die;
 
-            $statusCode = $this->getStatusCode($exception);
+            $statusCode = $this->handleException($exception);
             
             return response()->json([
                 'success' => false,
@@ -93,53 +76,5 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $exception);
-    }
-
-    /**
-     * Get appropriate status code for exception
-     *
-     * @param Throwable $e
-     * @return int
-     */
-    private function getStatusCode(Throwable $e): int
-    {
-        // Database errors
-        // if ($e instanceof PDOException || $e instanceof QueryException) {
-        //     return 500; // Internal Server Error
-        // }
-
-        // Client errors (400 Bad Request)
-        // if ($e instanceof \InvalidArgumentException || 
-        //     $e instanceof TypeError || 
-        //     $e instanceof ArgumentCountError ||
-        //     $e instanceof ValueError ||
-        //     $e instanceof ArithmeticError ||
-        //     $e instanceof DivisionByZeroError ||
-        //     $e instanceof UnhandledMatchError) {
-        //     return 400; // Bad Request
-        // }
-
-        // Parse and Compile errors
-        // if ($e instanceof ParseError || $e instanceof CompileError) {
-        //     return 500; // Internal Server Error
-        // }
-
-        // // Authentication errors
-        // if ($e instanceof \Illuminate\Auth\AuthenticationException) {
-        //     return 401; // Unauthorized
-        // }
-
-        // // Authorization errors
-        // if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
-        //     return 403; // Forbidden
-        // }
-
-        // // Not found errors
-        // if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-        //     return 404; // Not Found
-        // }
-
-        // Default to 500 if no specific status code is found
-        return 500;
     }
 }
