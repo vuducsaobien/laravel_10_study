@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Repositories\UserRepository;
-use PDOException;
-use Illuminate\Database\QueryException;
 use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
 use Throwable;
 use App\Exceptions\Handler;
+use Illuminate\Support\Facades\DB;
+use App\Exceptions\BusinessException;
+
 class UserService
 {
     const PER_PAGE = 10;
 
-    public $userRepository;
+    private $userRepository;
 
     public function __construct(UserRepository $userRepository)
     {
@@ -24,11 +24,15 @@ class UserService
     /**
      * Get List Users
      */
+    // public function getListUsers(): array
     public function getListUsers()
     {
-        $key = CacheHelper::generateKey(CacheKeysEnum::LIST_USER);
+        $key = CacheHelper::generateKey(CacheKeysEnum::USER_LIST);
         $result = CacheHelper::getFromCacheOrSet($key, function () {
-            return (new User())->getListUsers()->toArray();
+            // Cache key not found, get from DB
+            
+            return $this->userRepository->getAll()->toArray() ?? []; // $value is Array
+            // return $this->userRepository->getAll() ?? returnEmptyObject(); // $value is Object
         });
 
         return $result;
@@ -38,7 +42,8 @@ class UserService
     {
         $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $id);
         $result = CacheHelper::getFromCacheOrSet($key, function () use ($id) {
-            return User::getUserById($id)->toArray();
+            $user = $this->userRepository->findById($id);
+            return $user ? $user->toArray() : [];
         });
 
         return $result;
@@ -46,21 +51,70 @@ class UserService
 
     public function createUser(array $data)
     {
-        return User::createUser($data);
-    }
-
-    public function updateUser(int $id, array $params): User
-    {
-        $user = User::findOrFail($id);
-        $user->update($params);
+        $user = $this->userRepository->create($data);
         return $user;
     }
 
-    public function deleteUser(int $id)
+    /**
+     * Update user and return result
+     *
+     * @param int $id
+     * @param array $params
+     * @return array{isSuccess: bool, data: array, message: string}
+     * @throws \App\Exceptions\BusinessException
+     */
+    public function updateUser(int $id, array $params): array
     {
-        $user = User::findOrFail($id);
-        $user->delete();
-        return $user;
+        $isSuccess = false;
+        $data = [];
+        $message = 'Update user successfully';
+
+        DB::beginTransaction();
+        try {
+            $isSuccess = $this->userRepository->update($id, $params);
+            $data = $this->getUserById($id);
+
+            DB::commit();
+            return compact('isSuccess', 'data', 'message');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new BusinessException($e->getMessage(), $e->getCode() ?: 500);
+        }
+    }
+
+    /**
+     * Delete user and return result
+     *
+     * @param int $id
+     * @return array{isSuccess: bool, data: array, message: string}
+     * @throws \App\Exceptions\BusinessException
+     */
+    public function deleteUser(int $id): array
+    {
+        $isSuccess = false;
+        $data = [];
+        $message = 'Delete user successfully';
+
+        DB::beginTransaction();
+        try {
+            // Get user info before deletion for response
+            $user = $this->userRepository->findById($id);
+            if (!$user) {
+                throw new BusinessException('User not found', 404);
+            }
+
+            // Delete user
+            $isSuccess = $this->userRepository->delete($id);
+            $data = $user->toArray();
+
+            DB::commit();
+            return compact('isSuccess', 'data', 'message');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new BusinessException($e->getMessage(), $e->getCode() ?: 500);
+        }
     }
 
     /**
@@ -70,9 +124,7 @@ class UserService
      */
     public function testDatabaseConnection()
     {
-        // Try to connect to a non-existent database
-        config(['database.connections.mysql.database' => 'non_existent_database']);
-        $this->userRepository->testConnection();
+        return $this->userRepository->testConnection();
     }
 
     /**
@@ -82,8 +134,7 @@ class UserService
      */
     public function testInvalidQuery()
     {
-        // Execute an invalid SQL query
-        $this->userRepository->testInvalidQuery();
+        return $this->userRepository->testInvalidQuery();
     }
 
     /**
@@ -158,19 +209,4 @@ class UserService
             'correct' => true,
         };
     }
-
-    public function handleUserObserverAfterCreateAndUpdate(User $user)
-    {
-        try {
-            // Create new user - Cache
-            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $user->id);
-            CacheHelper::set($key, $user->toArray());
-
-            // Delete key list user
-            CacheHelper::del(CacheHelper::generateKey(CacheKeysEnum::LIST_USER));
-        } catch (Throwable $e) {
-            return (new Handler(app()))->render(request(), $e);
-        }
-    }
-
 }

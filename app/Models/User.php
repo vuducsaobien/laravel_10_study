@@ -46,20 +46,6 @@ class User extends BaseModel
         // 'remember_token',
     ];
 
-    public static function getListUsers()
-    {
-        return self::select('id', 'name', 'email')->get();
-    }
-
-    public static function getUserById(int $id)
-    {
-        $user = self::find($id);
-        if (!$user) {
-            return false;
-        }
-        return $user;
-    }
-
     public static function createUser(array $data)
     {
         return self::create($data);

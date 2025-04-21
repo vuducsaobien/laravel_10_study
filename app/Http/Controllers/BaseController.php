@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-
+use App\Enum\HttpCodeEnum;
 class BaseController extends Controller
 {
+
     /**
      * Return success response
      *
@@ -14,12 +15,13 @@ class BaseController extends Controller
      * @param int $code
      * @return JsonResponse
      */
-    protected function successBase($data, string $message, int $code = 200): JsonResponse
+    // protected function successBase($data, string $message, int $code = 200): JsonResponse
+    protected function successBase(array $data, int $code = 200): JsonResponse
     {
         return response()->json([
-            'success' => true,
-            'data' => $data,
-            'message' => $message
+            'success' => $data['isSuccess'],
+            'data' => $data['data'],
+            'message' => $data['message']
         ], $code);
     }
 
@@ -30,7 +32,7 @@ class BaseController extends Controller
      * @param int $code
      * @return JsonResponse
      */
-    protected function errorBase(string $message, int $code = 500): JsonResponse
+    protected function errorBase(string $message, int $code = HttpCodeEnum::ERROR_CODE_SYSTEM): JsonResponse
     {
         return response()->json([
             'success' => false,

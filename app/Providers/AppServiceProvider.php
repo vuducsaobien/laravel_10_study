@@ -33,9 +33,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PostService::class, function ($app) {
             return new PostService();
         });
-        $this->app->bind(UserRepository::class, function ($app) {
-            return new UserRepository();
-        });
         $this->app->bind(UserService::class, function ($app) {
             return new UserService($app->make(UserRepository::class));
         });

@@ -21,3 +21,10 @@ if (!function_exists('isLikeFormat')) {
     }
 }
 
+if (!function_exists('returnEmptyObject')) {
+    function returnEmptyObject(): \stdClass
+    {
+        return new \stdClass();
+    }
+}
+

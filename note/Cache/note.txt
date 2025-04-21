@@ -1,0 +1,36 @@
+I. Nên xử lí - Logic cập nhật lại Cache bussiness ở đâu ? Ở tầng Service hay ở Observer ?
+    1. Separation of Concerns (SoC):
+        UserObserver là nơi lý tưởng để xử lý các sự kiện liên quan đến vòng đời của model (created, updated, deleted)
+        UserService nên tập trung vào business logic chính của việc tạo user
+
+    2. Consistency:
+        Hiện tại UserObserver đã xử lý sự kiện created và gọi handleUserObserverAfterCreateAndUpdate
+        Nếu chuyển logic này vào UserService, chúng ta sẽ có 2 nơi xử lý cache cho cùng một sự kiện
+
+    3. Maintainability:
+        Khi logic cache được tập trung ở UserObserver, việc thay đổi cách xử lý cache sẽ dễ dàng hơn
+        Tránh được việc phải cập nhật nhiều nơi khi thay đổi logic cache
+
+    4. Current Implementation:
+        UserObserver đã được thiết kế để xử lý các sự kiện của model
+        UserService đã comment out dòng gọi handleUserObserverAfterCreateAndUpdate trong phương thức updateUser
+
+    5. Không bỏ sót Logic trong Service
+        Obverser thao tác với model
+        Nên nếu bỏ logic xử lí cache trong service thì có thể sẽ bị miss, quên không xử lí
+        Ví dụ có 1 logic phức tạp, trong đó có create 1 new User, mà quên xử lí tạo cache cho user detail
+        Nói chung bỏ Cache xử lí vào Obverser cũng có điểm yếu là làm cho xử lí logic lâu hơn (vì phải xử tạo Cache mới nữa)
+        Nhưng sẽ không bị bỏ sót - vì tạo xong record trong Database xong thì mới gọi xử lí cache
+
+ get List User
+    - DB Có record          OK
+    Key : value
+    laravel_database_list_user : [{"id":12,"name":"","email":"eflatley@gmail.com"}]
+        value = [] 
+            => vô DB lấy record, nếu có record => cập nhật lại value = [{"id":12,"name":"","email":"eflatley@gmail.com"}]
+            => vô DB lấy record, nếu ko có record => cập nhật lại value = []
+        => value = [] => lúc nào cũng phải vô DB lấy record, không tốt, 
+        muốn trong Cache, nếu có key rồi thì check rỗng thì cũng phải lấy rỗng, không vô DB lấy lại nữa. 
+    - DB không có record
+
+II. Khi run UserSeeder hoặc PostSeeder có vấn đề : Observer tự động thêm vào Cache keys

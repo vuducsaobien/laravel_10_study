@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\HttpCodeEnum;
 use App\Services\UserService;
 use App\Exceptions\Handler;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 use App\Http\Request\User\CreateRequest;
 use App\Http\Request\User\UpdateRequest;
+use App\Exceptions\BusinessException;
+use App\Exceptions\ValidateException;
+use App\Exceptions\DatabaseException;
 
 /**
  * @OA\Info(
@@ -107,9 +111,13 @@ class UserController extends BaseController
     {
         try {
             $params = $request->all();
-            $result = $this->userService->updateUser($id, $params);
-            
-            return $this->successBase($result, 'User updated successfully');
+            $data = $this->userService->updateUser($id, $params);
+            if (!$data['isSuccess']) {
+                return $this->errorBase($data['message'], HttpCodeEnum::ERROR_CODE_BUSSINESS);
+            }
+            return $this->successBase($data);
+        } catch (BusinessException $e) {
+            return $this->errorBase($e->getMessage(), $e->getCode());
         } catch (Throwable $e) {
             return (new Handler(app()))->render(request(), $e);
         }
@@ -117,12 +125,24 @@ class UserController extends BaseController
 
     /**
      * Delete User
+     * 
+     * @param int $id
+     * @return JsonResponse
      */
     public function deleteUser(int $id): JsonResponse
     {
         try {
-            $result = $this->userService->deleteUser($id);
-            return $this->successBase($result, 'User deleted successfully');
+            $data = $this->userService->deleteUser($id);
+            if (!$data['isSuccess']) {
+                return $this->errorBase($data['message'], HttpCodeEnum::ERROR_CODE_BUSSINESS);
+            }
+            return $this->successBase($data);
+        } catch (ValidateException $e) {
+            return $this->errorBase($e->getMessage(), $e->getCode());
+        } catch (DatabaseException $e) {
+            return $this->errorBase($e->getMessage(), $e->getCode());
+        } catch (BusinessException $e) {
+            return $this->errorBase($e->getMessage(), $e->getCode());
         } catch (Throwable $e) {
             return (new Handler(app()))->render(request(), $e);
         }
@@ -178,7 +198,7 @@ class UserController extends BaseController
                 default:
                     return $this->errorBase('Invalid test type', 400);
             }
-            return $this->successBase(null, 'Test completed successfully');
+            return $this->successBase([], 'Test completed successfully');
         } catch (Throwable $e) {
             return (new Handler(app()))->render(request(), $e);
         }

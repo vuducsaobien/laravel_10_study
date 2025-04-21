@@ -20,7 +20,11 @@ return new class extends Migration
                 $table->text('content')->nullable(false);
                 $table->unsignedBigInteger('author_id')->nullable()->default(null);
                 $table->timestamps();
-                $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
+                // $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
+
+                // Tái hiện if (!$user->delete()) {
+                $table->foreign('author_id')->references('id')->on('users')->onDelete('restrict');
+
             });
         } catch (\Exception $e) {
             // $this->down();

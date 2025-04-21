@@ -92,40 +92,40 @@ class Handler extends ExceptionHandler
     private function getStatusCode(Throwable $e): int
     {
         // Database errors
-        if ($e instanceof PDOException || $e instanceof QueryException) {
-            return 500; // Internal Server Error
-        }
+        // if ($e instanceof PDOException || $e instanceof QueryException) {
+        //     return 500; // Internal Server Error
+        // }
 
         // Client errors (400 Bad Request)
-        if ($e instanceof \InvalidArgumentException || 
-            $e instanceof TypeError || 
-            $e instanceof ArgumentCountError ||
-            $e instanceof ValueError ||
-            $e instanceof ArithmeticError ||
-            $e instanceof DivisionByZeroError ||
-            $e instanceof UnhandledMatchError) {
-            return 400; // Bad Request
-        }
+        // if ($e instanceof \InvalidArgumentException || 
+        //     $e instanceof TypeError || 
+        //     $e instanceof ArgumentCountError ||
+        //     $e instanceof ValueError ||
+        //     $e instanceof ArithmeticError ||
+        //     $e instanceof DivisionByZeroError ||
+        //     $e instanceof UnhandledMatchError) {
+        //     return 400; // Bad Request
+        // }
 
         // Parse and Compile errors
-        if ($e instanceof ParseError || $e instanceof CompileError) {
-            return 500; // Internal Server Error
-        }
+        // if ($e instanceof ParseError || $e instanceof CompileError) {
+        //     return 500; // Internal Server Error
+        // }
 
-        // Authentication errors
-        if ($e instanceof \Illuminate\Auth\AuthenticationException) {
-            return 401; // Unauthorized
-        }
+        // // Authentication errors
+        // if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+        //     return 401; // Unauthorized
+        // }
 
-        // Authorization errors
-        if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
-            return 403; // Forbidden
-        }
+        // // Authorization errors
+        // if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
+        //     return 403; // Forbidden
+        // }
 
-        // Not found errors
-        if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-            return 404; // Not Found
-        }
+        // // Not found errors
+        // if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+        //     return 404; // Not Found
+        // }
 
         // Default to 500 if no specific status code is found
         return 500;
