@@ -148,3 +148,8 @@ Explain - one to one ; cha con như nhau
         => $history = $supplier->userHistory;
 
 - composer dump-autoload
+
+- Flow code API, Error Handling, transaction, rollback dữ liệu DB đi từ 
+    TestController : public function testBussinessException
+    TestService : public function testBussinessException
+    TestRepository
