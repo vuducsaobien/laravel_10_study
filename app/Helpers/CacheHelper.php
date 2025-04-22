@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 use App\Enum\CacheKeysEnum;
 use App\Helpers\RedisCacheHelper;
-
+use App\Enum\CacheDataTypeEnum;
 class CacheHelper
 {
     private static function getCacheInterface()
@@ -80,6 +80,16 @@ class CacheHelper
 
         $value = $callback();
         self::set($key, $value, $ttl);
-        return $value;
+        // return $value;
+        return self::get($key);
+    }
+
+    public static function returnCachedResult($data, string $dataType)
+    {
+        if ($dataType === CacheDataTypeEnum::ARRAY) {
+            return $data->toArray() ?? [];
+        }
+
+        return $data ?? returnEmptyObject();
     }
 }

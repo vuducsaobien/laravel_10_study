@@ -7,14 +7,19 @@ use App\Enum\DatabaseExceptionTypesEnum;
 use App\Exceptions\BusinessException;
 use Illuminate\Support\Facades\DB;
 use Throwable;
-
+use App\Helpers\CacheHelper;
+use App\Enum\CacheKeysEnum;
+use App\Repositories\UserRepository;
+use App\Enum\CacheDataTypeEnum;
 class TestService
 {
     private $repository;
+    private $userRepository;
 
-    public function __construct(TestRepository $testRepository)
+    public function __construct(TestRepository $testRepository, UserRepository $userRepository)
     {
         $this->repository = $testRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -60,6 +65,37 @@ class TestService
         } catch (\Throwable $e) {
             DB::rollBack();
             throw $e;
+        }
+    }
+
+    public function testCacheArrayOrObject()
+    {
+        $isSuccess = false;
+        $data = [];
+        $message = '';
+
+        try {
+            $id = 3;
+            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $id);
+            $data = CacheHelper::getFromCacheOrSet($key, function () use ($id) {
+                return CacheHelper::returnCachedResult(
+                    $this->userRepository->findById($id), 
+                    CacheDataTypeEnum::ARRAY
+                    // CacheDataTypeEnum::OBJECT
+                );
+            });
+
+            $message = __('message.user.retrieved_successfully');
+
+            echo '<pre style="color:red";>$data === '; print_r($data);echo '</pre>';
+
+            $dataObject = $data->posts[0]->title;
+            var_dump($dataObject);
+            die('testCacheArrayOrObject');
+
+            return compact('isSuccess', 'data', 'message');
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

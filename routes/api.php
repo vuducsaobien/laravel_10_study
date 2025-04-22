@@ -38,6 +38,7 @@ Route::middleware(['api.key'])->group(function () {
         Route::get('/database', [TestController::class, 'testDatabaseException'])->name('testDatabaseException');
         Route::get('/bussiness', [TestController::class, 'testBussinessException'])->name('testBussinessException');
         Route::get('/system', [TestController::class, 'testSystemException'])->name('testSystemException');
+        Route::get('/cache', [TestController::class, 'testCacheArrayOrObject'])->name('testCacheArrayOrObject');
     });
 
 });
