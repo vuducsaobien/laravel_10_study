@@ -153,3 +153,5 @@ Explain - one to one ; cha con như nhau
     TestController : public function testBussinessException
     TestService : public function testBussinessException
     TestRepository
+
+--column-statistics=0

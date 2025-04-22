@@ -66,4 +66,13 @@ class TestController extends BaseController
         }
     }
 
+    public function testCacheArrayOrObject()
+    {
+        try {
+            $this->testService->testCacheArrayOrObject();
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
+        }
+    }
+
 }
