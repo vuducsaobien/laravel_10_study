@@ -25,7 +25,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id', '!=', auth()->id())->get();
         return view('users.index', compact('users'));
     }
 
@@ -72,6 +72,10 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
+            if ($id == auth()->id()) {
+                return back()->with('error', 'Bạn không thể xóa chính mình.');
+            }
+
             $user = User::findOrFail($id);
             $user->delete();
 

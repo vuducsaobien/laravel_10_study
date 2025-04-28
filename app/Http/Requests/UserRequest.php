@@ -11,6 +11,10 @@ class UserRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        // Kiểm tra nếu là request xóa và user đang cố xóa chính mình
+        if ($this->isMethod('DELETE') && $this->route('user') == auth()->id()) {
+            return false;
+        }
         return true;
     }
 
@@ -52,5 +56,15 @@ class UserRequest extends FormRequest
             'password.required' => 'Mật khẩu là bắt buộc',
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
         ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function failedAuthorization()
+    {
+        throw new \Illuminate\Auth\Access\AuthorizationException('Bạn không thể xóa chính mình.');
     }
 } 

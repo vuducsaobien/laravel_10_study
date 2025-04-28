@@ -35,7 +35,7 @@
                             <td>{{ $post->id }}</td>
                             <td>{{ $post->title }}</td>
                             <td>{{ Str::limit($post->content, 50) }}</td>
-                            <td>{{ $post->author->name }}</td>
+                            <td>{{ $post->author->name ?? ''}}</td>
                             <td>
                                 <button class="btn btn-sm btn-warning edit-post" 
                                         data-id="{{ $post->id }}"
