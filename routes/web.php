@@ -21,7 +21,7 @@ use App\Http\Controllers\PostController;
 */
 
 // Limix
-Route::get('/', [UserController::class, 'home'])->name('home');
+// Route::get('/', [UserController::class, 'home'])->name('home');
 
 // Route::group(['as' => 'users.', 'prefix' => 'users'], function () {
 //     Route::get('/', [UserController::class, 'getListUsers'])->name('getListUsers');
@@ -38,3 +38,7 @@ Route::get('/', [UserController::class, 'home'])->name('home');
 //     Route::put('/{id}', [PostController::class, 'updatePost'])->name('updatePost');
 //     Route::delete('/{id}', [PostController::class, 'deletePost'])->name('deletePost');
 // });
+
+Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');

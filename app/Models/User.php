@@ -8,12 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\BaseModel;
-class User extends BaseModel
+
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'users';
-    public $timestamps = FALSE;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +24,17 @@ class User extends BaseModel
     protected $fillable = [
         'name',
         'email',
-        // 'password',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -32,18 +43,8 @@ class User extends BaseModel
      * @var array<string, string>
      */
     protected $casts = [
-        // 'email_verified_at' => 'datetime',
-    ];
-
-    // LIMIX
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        // 'password',
-        // 'remember_token',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     public static function getListUsers()
@@ -87,6 +88,4 @@ class User extends BaseModel
     {
         return $this->hasMany(Post::class, 'author_id');
     }
-
-
 }
