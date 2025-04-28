@@ -10,6 +10,9 @@
             min-height: 100vh;
             background-color: #343a40;
             padding-top: 20px;
+            position: fixed;
+            width: 250px;
+            z-index: 1000;
         }
         .sidebar a {
             color: #fff;
@@ -25,6 +28,7 @@
         }
         .main-content {
             padding: 20px;
+            margin-left: 250px;
         }
         .user-info {
             color: #fff;
@@ -43,13 +47,38 @@
         .alert {
             margin-bottom: 20px;
         }
+        .navbar-toggler {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                min-height: auto;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .navbar-toggler {
+                display: block;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+            .sidebar.collapsed {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-2 sidebar">
+            <div class="col-md-2 sidebar" id="sidebar">
+                <button class="navbar-toggler" type="button" onclick="toggleSidebar()">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="user-info">
                     <p>Đang đăng nhập với:</p>
                     <p class="email">{{ auth()->user()->email }}</p>
@@ -89,6 +118,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
     @yield('scripts')
 </body>
 </html> 

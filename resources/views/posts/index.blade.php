@@ -45,7 +45,7 @@
                                         data-bs-target="#editPostModal">
                                     Edit
                                 </button>
-                                <form action="{{ route('posts.delete', $post->id) }}" method="POST" class="d-inline">
+                                <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
