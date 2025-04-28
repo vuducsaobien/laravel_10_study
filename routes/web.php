@@ -42,3 +42,15 @@ use App\Http\Controllers\PostController;
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.delete');
+
+    Route::get('/posts', [App\Http\Controllers\PostController::class, 'index'])->name('posts.index');
+    Route::post('/posts', [App\Http\Controllers\PostController::class, 'store'])->name('posts.store');
+    Route::put('/posts/{id}', [App\Http\Controllers\PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{id}', [App\Http\Controllers\PostController::class, 'destroy'])->name('posts.delete');
+});

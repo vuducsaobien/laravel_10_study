@@ -18,6 +18,11 @@ class PostController extends BaseController
         $this->postService = $postService;
     }
 
+    public function index()
+    {
+        return view('posts.index');
+    }
+
     /**
      * Get List Posts
      */
