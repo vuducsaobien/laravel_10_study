@@ -2,19 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Repositories\UserRepository;
-use PDOException;
-use Illuminate\Database\QueryException;
 use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
 use Throwable;
-use App\Exceptions\Handler;
-class UserService
-{
-    const PER_PAGE = 10;
+use Illuminate\Support\Facades\DB;
 
-    public $userRepository;
+class UserService extends BaseService
+{
+    private $userRepository;
 
     public function __construct(UserRepository $userRepository)
     {
@@ -26,150 +22,136 @@ class UserService
      */
     public function getListUsers()
     {
-        $key = CacheHelper::generateKey(CacheKeysEnum::LIST_USER);
-        $result = User::getFromCacheOrSet($key, function () {
-            return (new User())->getListUsers()->toArray();
-        });
+        $isSuccess = false;
+        $data = [];
+        $message = 'Get list users successfully';
 
-        return $result;
+        try {
+            $key = CacheHelper::generateKey(CacheKeysEnum::USER_LIST);
+            $data = CacheHelper::getFromCacheOrSet($key, function () {
+                // Cache key not found, get from DB
+                return CacheHelper::returnCachedResult(
+                    $this->userRepository->getAll()
+                    // $this->userRepository->getAllWithPosts()
+                );
+            });
+
+            $isSuccess = true;
+    
+            return compact('isSuccess', 'data', 'message');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
-    public function getUserById(int $id)
+    public function getUserById(int $id): array
     {
-        $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $id);
-        $result = User::getFromCacheOrSet($key, function () use ($id) {
-            return User::getUserById($id)->toArray();
-        });
+        $isSuccess = false;
+        $data = [];
+        $message = '';
 
-        return $result;
-    }
+        try {
+            $data = $this->getUserByIdViaCache($id);
+            $isSuccess = true;
+            $message = __('message.user.retrieved_successfully');
 
-    public function createUser(array $data)
-    {
-        return User::createUser($data);
-    }
-
-    public function updateUser(int $id, array $params): User
-    {
-        $user = User::findOrFail($id);
-        $user->update($params);
-        return $user;
-    }
-
-    public function deleteUser(int $id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-        return $user;
-    }
-
-    /**
-     * Test database connection error
-     * 
-     * @throws PDOException
-     */
-    public function testDatabaseConnection()
-    {
-        // Try to connect to a non-existent database
-        config(['database.connections.mysql.database' => 'non_existent_database']);
-        $this->userRepository->testConnection();
-    }
-
-    /**
-     * Test invalid SQL query
-     * 
-     * @throws QueryException
-     */
-    public function testInvalidQuery()
-    {
-        // Execute an invalid SQL query
-        $this->userRepository->testInvalidQuery();
-    }
-
-    /**
-     * Test invalid value error
-     * 
-     * @throws \ValueError
-     */
-    public function testInvalidValue()
-    {
-        // This will throw ValueError in PHP 8.0+
-        $value = -1;
-        if ($value < 0) {
-            throw new \ValueError('Value must be non-negative');
+            return compact('isSuccess', 'data', 'message');
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 
     /**
-     * Test ParseError
-     * 
-     * @throws \ParseError
+     * Create user and return result
+     *
+     * @param array $data
+     * @return array{isSuccess: bool, data: array, message: string}
+     * @throws \Throwable
      */
-    public function testParseError()
+    public function createUser(array $data): array
     {
-        // This will cause a parse error
-        eval('function() {');
-    }
+        $isSuccess = false;
+        $data = [];
+        $message = '';
 
-    /**
-     * Test ArithmeticError
-     * 
-     * @throws \ArithmeticError
-     */
-    public function testArithmeticError()
-    {
-        // This will cause an arithmetic error
-        $result = PHP_INT_MAX + 1;
-    }
-
-    /**
-     * Test CompileError
-     * 
-     * @throws \CompileError
-     */
-    public function testCompileError()
-    {
-        // This will cause a compile error
-        eval('class {');
-    }
-
-    /**
-     * Test DivisionByZeroError
-     * 
-     * @throws \DivisionByZeroError
-     */
-    public function testDivisionByZeroError()
-    {
-        // This will cause a division by zero error
-        $result = 5 / 0;
-    }
-
-    /**
-     * Test UnhandledMatchError
-     * 
-     * @throws \UnhandledMatchError
-     */
-    public function testUnhandledMatchError()
-    {
-        // This will cause an unhandled match error
-        $value = 'invalid';
-        match($value) {
-            'valid' => true,
-            'correct' => true,
-        };
-    }
-
-    public function handleUserObserverAfterCreateAndUpdate(User $user)
-    {
         try {
-            // Create new user - Cache
-            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $user->id);
-            CacheHelper::set($key, $user->toArray());
+            $data = $this->userRepository->create($data);
+            $isSuccess = true;
+            $message = __('message.user.created_successfully');
 
-            // Delete key list user
-            CacheHelper::del(CacheHelper::generateKey(CacheKeysEnum::LIST_USER));
-        } catch (Throwable $e) {
-            return (new Handler(app()))->render(request(), $e);
+            return compact('isSuccess', 'data', 'message');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Update user and return result
+     *
+     * @param int $id
+     * @param array $params
+     * @return array{isSuccess: bool, data: array, message: string}
+     * @throws \Throwable
+     */
+    public function updateUser(int $id, array $params): array
+    {
+        $isSuccess = false;
+        $data = [];
+        $message = '';
+
+        DB::beginTransaction();
+        try {
+            $isSuccess = $this->userRepository->updateWithLock($id, $params);
+            $data = $this->getUserByIdViaCache($id);
+            
+            DB::commit();
+            return compact('isSuccess', 'data', 'message');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * Delete user and return result
+     *
+     * @param int $id
+     * @return array{isSuccess: bool, data: array, message: string}
+     * @throws \Throwable
+     */
+    public function deleteUser(int $id): array
+    {
+        $isSuccess = false;
+        $data = [];
+        $message = '';
+
+        DB::beginTransaction();
+        try {
+            $isSuccess = $this->userRepository->delete($id);
+            $message = __('message.user.deleted_successfully');
+
+            DB::commit();
+            return compact('isSuccess', 'data', 'message');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function getUserByIdViaCache(int $id)
+    {
+        $data = CacheHelper::returnCachedEmptyInit();
+        try {
+            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $id);
+            $data = CacheHelper::getFromCacheOrSet($key, function () use ($id) {
+                return CacheHelper::returnCachedResult(
+                    $this->userRepository->findById($id)
+                );
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

@@ -46,20 +46,7 @@ class User extends BaseModel
         // 'remember_token',
     ];
 
-    public static function getListUsers()
-    {
-        return self::select('name', 'email')->get();
-    }
-
-    public static function getUserById(int $id)
-    {
-        $user = self::find($id);
-        if (!$user) {
-            return false;
-        }
-        return $user;
-    }
-
+    // CRUD
     public static function createUser(array $data)
     {
         return self::create($data);
@@ -83,10 +70,10 @@ class User extends BaseModel
         return $user->delete();
     }
 
+    // Relationship
     public function posts()
     {
         return $this->hasMany(Post::class, 'author_id');
     }
-
 
 }

@@ -6,13 +6,14 @@ use App\Models\User;
 use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
 use App\Services\UserService;
+use App\Services\CacheService;
 class UserObserver
 {
-    public $userService;
+    private $cacheService;
 
-    public function __construct(UserService $userService)
+    public function __construct(CacheService $cacheService)
     {
-        $this->userService = $userService;
+        $this->cacheService = $cacheService;
     }
 
     /**
@@ -20,7 +21,7 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        $this->userService->handleUserObserverAfterCreateAndUpdate($user);
+        $this->cacheService->handleUserAfterCreateAndUpdate($user);
     }
 
     /**

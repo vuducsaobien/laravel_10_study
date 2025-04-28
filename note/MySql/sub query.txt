@@ -1,0 +1,75 @@
+dump-laravel_10_study-202504261242.sql
+A. Subquery trong WHERE (lọc)
+    - Query A-1:
+        SELECT 
+            DISTINCT
+            -- id, 
+            table_1_id 
+        FROM table_2 
+        WHERE table_1_id <= 2
+
+    - Result:
+    | table_1_ID |
+    |------------|
+    | 1          |
+    | 2          |
+
+
+    - Query A-2:
+        SELECT 
+            id, name
+        FROM table_1
+        WHERE id IN (         -- Đây
+            Query A-1
+        );
+        
+    - Result:
+    | id | name             |
+    |----|------------------|
+    | 1  | Table 1 - Name 1 |
+    | 2  | Table 1 - Name 2 |
+
+
+B. Subquery trong SELECT (đếm từng người)
+
+    Query B-1 : SELECT COUNT(*) FROM table_2 WHERE table_2.table_1_id = table_1.id 
+
+    Query B-2 :
+        SELECT id, name,
+            ( Query B-1 ) AS total_posts
+        FROM table_1;
+
+        Table 1:
+        | id | name             | Query-1                                                   | total_posts |
+        |----|------------------|-----------------------------------------------------------|-------------|
+        | 1  | Table 1 - Name 1 | SELECT COUNT(*) FROM table_2 WHERE table_2.table_1_id = 1 | 2           |
+        | 2  | Table 1 - Name 2 | SELECT COUNT(*) FROM table_2 WHERE table_2.table_1_id = 2 | 1           |
+        | 3  | Table 1 - Name 3 | SELECT COUNT(*) FROM table_2 WHERE table_2.table_1_id = 3 | 0           |
+
+    => Result:
+        | id | name             | total_posts |
+        |----|------------------|-------------|
+        | 1  | Table 1 - Name 1 | 2           |
+        | 2  | Table 1 - Name 2 | 1           |
+        | 3  | Table 1 - Name 3 | 0           |
+
+
+C. Subquery trong FROM (làm bảng tạm)
+    - Query C-1:
+        SELECT 
+            table_1.name AS user_name, COUNT(table_2.id) AS total_posts
+        FROM table_1
+        LEFT JOIN table_2 
+        ON 
+            table_1.id = table_2.table_1_id
+        GROUP BY 
+            table_1.name
+    
+    
+
+
+
+
+
+
+

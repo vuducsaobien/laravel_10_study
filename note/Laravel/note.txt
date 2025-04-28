@@ -1,0 +1,178 @@
+I. Tôi sẽ giải thích về việc nên đặt transaction ở đâu trong trường hợp có nhiều logic phức tạp:
+
+    1. Nên đặt transaction ở Service layer vì những lý do sau:
+        + Single Responsibility Principle (SRP): 
+            Service layer là nơi chứa business logic chính của ứng dụng. 
+            Controller chỉ nên xử lý HTTP request/response và gọi service tương ứng. 
+            Việc quản lý transaction là một phần của business logic.
+        + Reusability: 
+            Service có thể được gọi từ nhiều nơi khác nhau (Controller, Command, Job, etc.). 
+            Nếu transaction được đặt ở Controller, 
+            chúng ta sẽ phải lặp lại logic transaction ở mỗi nơi gọi service.
+        + Consistency: 
+            Service layer đảm bảo tính nhất quán của business logic và transaction. 
+            Nếu có lỗi xảy ra, service có thể rollback transaction một cách chính xác.
+        + Testability: 
+            Dễ dàng test business logic và transaction trong service layer mà không cần phụ thuộc vào HTTP context.
+
+    2. Ví dụ:
+        Trong code hiện tại của bạn, transaction đã được đặt đúng ở UserService:
+        public function deleteUser(int $id): array
+        {
+            DB::beginTransaction();
+            try {
+                // Business logic here
+                DB::commit();
+                return compact('isSuccess', 'data', 'message');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw new BusinessException($e->getMessage(), $e->getCode() ?: 500);
+            }
+        }
+
+        Controller chỉ đơn giản gọi service và xử lý response:
+        public function deleteUser(DeleteRequest $request, int $id): JsonResponse
+        {
+            try {
+                $data = $this->userService->deleteUser($id);
+                return $this->successBase($data);
+            } catch (Throwable $e) {
+                return (new Handler(app()))->render(request(), $e);
+            }
+        }
+    
+    3. Trường hợp ngoại lệ:
+        - Nếu bạn cần quản lý transaction ở cấp độ cao hơn (ví dụ: bao gồm nhiều service calls), 
+        thì có thể đặt transaction ở Controller.
+        - Tuy nhiên, trong trường hợp này, tốt hơn là tạo một service mới để quản lý logic phức tạp đó.
+
+=> Tóm lại, với logic phức tạp, 
+việc đặt transaction ở Service layer là best practice vì nó giúp code dễ bảo trì, tái sử dụng và test hơn.
+
+
+II. Nếu deleteUser có nhiều logic thì ở controller chỉ gọi đến 1 hàm service 
+rồi thực hiện tất cả trong hàm chính service đấy thôi, 
+hay controller tiếp tục xử lí tiếp ?
+    Tôi sẽ giải thích về cách tổ chức code khi có nhiều logic phức tạp:
+
+    1. Best Practice: Controller chỉ nên gọi 1 hàm service chính. Lý do:
+        - Single Responsibility Principle (SRP): 
+            Controller chỉ nên có trách nhiệm xử lý HTTP request/response và gọi service tương ứng
+        - Clean Architecture: 
+            Service layer là nơi chứa business logic, Controller không nên biết về chi tiết business logic
+        - Maintainability: 
+            Dễ dàng thay đổi logic mà không cần sửa Controller
+        - Testability: 
+            Dễ test business logic độc lập với HTTP context
+
+    2. Ví dụ minh họa cách tổ chức tốt:
+        // UserController.php
+        public function deleteUser(DeleteRequest $request, int $id): JsonResponse
+        {
+            try {
+                $data = $this->userService->deleteUser($id);
+                return $this->successBase($data);
+            } catch (Throwable $e) {
+                return (new Handler(app()))->render(request(), $e);
+            }
+        }
+
+        // UserService.php
+        public function deleteUser(int $id): array
+        {
+            DB::beginTransaction();
+            try {
+                // Step 1: Validate user
+                $user = $this->validateUser($id);
+                
+                // Step 2: Delete related data
+                $this->deleteUserRelatedData($user);
+                
+                // Step 3: Delete user
+                $this->userRepository->delete($id);
+                
+                // Step 4: Log activity
+                $this->logUserDeletion($user);
+                
+                // Step 5: Send notification
+                $this->notifyUserDeletion($user);
+                
+                DB::commit();
+                return [
+                    'isSuccess' => true,
+                    'data' => $user->toArray(),
+                    'message' => 'User deleted successfully'
+                ];
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw new BusinessException($e->getMessage(), $e->getCode() ?: 500);
+            }
+        }
+
+        // Các private methods trong service để tổ chức code
+        private function validateUser(int $id): User
+        {
+            $user = $this->userRepository->findById($id);
+            if (!$user) {
+                throw new BusinessException('User not found', 404);
+            }
+            return $user;
+        }
+
+        private function deleteUserRelatedData(User $user): void
+        {
+            // Delete related data logic
+        }
+
+        private function logUserDeletion(User $user): void
+        {
+            // Logging logic
+        }
+
+        private function notifyUserDeletion(User $user): void
+        {
+            // Notification logic
+        }
+
+    3. Cách tổ chức KHÔNG nên làm:
+        // KHÔNG NÊN: Controller xử lý nhiều logic
+        public function deleteUser(DeleteRequest $request, int $id): JsonResponse
+        {
+            DB::beginTransaction();
+            try {
+                // Step 1: Validate user
+                $user = $this->userService->validateUser($id);
+                
+                // Step 2: Delete related data
+                $this->userService->deleteUserRelatedData($user);
+                
+                // Step 3: Delete user
+                $this->userService->deleteUser($id);
+                
+                // Step 4: Log activity
+                $this->userService->logUserDeletion($user);
+                
+                DB::commit();
+                return $this->successBase(['message' => 'User deleted successfully']);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return (new Handler(app()))->render(request(), $e);
+            }
+        }
+
+    4. Lợi ích của việc tổ chức code trong service:
+        - Tất cả business logic được tập trung ở một nơi
+        - Dễ dàng thay đổi flow xử lý mà không cần sửa Controller
+        - Có thể tái sử dụng logic ở nhiều nơi khác nhau
+        - Dễ dàng test từng phần logic riêng biệt
+        - Controller luôn đơn giản và dễ hiểu
+=> Tóm lại, khi có nhiều logic phức tạp, Controller chỉ nên gọi 1 hàm service chính, 
+và service sẽ chịu trách nhiệm tổ chức và thực thi tất cả các logic cần thiết.
+
+
+
+
+
+
+
+

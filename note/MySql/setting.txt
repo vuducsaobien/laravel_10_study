@@ -1,0 +1,30 @@
+I. ONLY_FULL_GROUP_BY
+    A. Nếu bạn muốn tắt chỉ trong phiên làm việc hiện tại của DBeaver (tắt app đi thì reset)
+        -- 1. Kiểm tra hiện tại:
+        SELECT @@sql_mode;
+        -- STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+        -- 2. Tắt ONLY_FULL_GROUP_BY (chỉ trong phiên hiện tại)
+        SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));
+
+
+        -- 3. Bật lại ONLY_FULL_GROUP_BY
+        SET SESSION sql_mode = CONCAT(@@sql_mode, ',ONLY_FULL_GROUP_BY');
+        -- ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+    B. Nếu bạn muốn tắt toàn hệ thống (vĩnh viễn) 
+        - Cần quyền SUPER hoặc root.
+        - Kiểm tra sql_mode Toàn hệ thống hiện tại
+            SELECT @@GLOBAL.sql_mode;
+
+        - SET GLOBAL sql_mode = (SELECT REPLACE(@@global.sql_mode, 'ONLY_FULL_GROUP_BY', ''));
+
+
+        Hoặc chỉnh trong file cấu hình MySQL (thường là my.cnf hoặc my.ini):
+            [mysqld]
+            sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ENGINE_SUBSTITUTION
+
+
+        Kiểm tra tài khoản hiện tại là gì
+            SELECT CURRENT_USER(), USER();
+

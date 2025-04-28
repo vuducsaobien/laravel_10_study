@@ -1,0 +1,146 @@
+- Web browser UI note
+    + https://app.swaggerhub.com
+    + Api Key:
+    + Create project :
+    + Create Template :
+    + Project Members :
+
+- Install
+    + 1. composer require "darkaonline/l5-swagger"
+    + 2. Publish file config : php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+    
+    + 3. Thêm các dòng sau vào
+        A.
+        /**
+        * @OA\Info(
+        *     version="1.0.0",
+        *     title="Blog Post API Documentation",
+        *     description="API documentation for Blog Post application",
+        *     @OA\Contact(
+        *         email="admin@example.com"
+        *     )
+        * )
+        */
+        class UserController extends BaseController
+
+        B.
+        * @OA\Get(
+        *     path="/api/users",
+        *     tags={"User"},
+        *     summary="Get List Users",
+        *     @OA\Response(response=200, description="Success")
+        * )
+        */
+        public function getListUsers(): JsonResponse
+
+    + 4. Generate Swagger UI : php artisan l5-swagger:generate 
+    => generate ra file api-docs.json trong storage/api-docs
+
+    + 4. Access : http://your-domain.com/api/documentation
+    (http://localhost:8000/api/documentation)
+
+    + 5. Mỗi lần thêm 1 function API hoặc chỉnh sửa input, output 
+    phải chạy lệnh 
+        php artisan l5-swagger:generate 
+    để cập nhật lại
+    file api-docs.json + http://your-domain.com/api/documentation lại
+
+- Export Collection Postman
+    => Collection v2.1 : File: Test Limix.postman_collection
+
+    hãy kiểm tra xem package đã được cài đặt đúng chưa:
+    composer show darkaonline/l5-swagger
+
+    Hãy kiểm tra xem thư mục storage có quyền ghi không:
+    mkdir -p storage/api-docs
+
+    Hãy thử chạy lệnh generate với verbose mode để xem lỗi chi tiết:
+    php artisan l5-swagger:generate -v
+
+- Run lại 
+    php artisan l5-swagger:generate
+- Vào 
+    http://localhost:8000/api/documentation
+- Ấn nút 
+    Authorize => thêm X_API_KEY=limix_duc_api_key
+- 
+
+- Để có thể gọi API từ SwaggerHub.com đến localhost của bạn, bạn cần một số bước sau:
+    + composer require fruitcake/laravel-cors
+    + Để có thể truy cập API của bạn từ internet, bạn cần một dịch vụ tunnel như ngrok
+    + https://ngrok.com/download
+    + ngrok.exe 
+        - ngrok http 8000
+        -   ERROR:  authentication failed: Usage of ngrok requires a verified account and authtoken.
+            ERROR:  Sign up for an account: https://dashboard.ngrok.com/signup
+            ERROR:  Install your authtoken: https://dashboard.ngrok.com/get-started/your-authtoken
+            ERROR:  ERR_NGROK_4018
+            ERROR:  https://ngrok.com/docs/errors/err_ngrok_4018
+        - Fix
+            + ngrok config add-authtoken $YOUR_AUTHTOKEN
+            ngrok config add-authtoken 2hoy60mrtETuVa4idArczJrmHHg_5eq8zQDFq5yaBkCj7g5KB
+        - ngrok http 8000 (picture Screenshot_2)
+
+- php artisan l5-swagger:generate
+https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app => http://localhost:8000 (Screenshot_3)
+=> 
+
+- Screenshot_7
+    ngrok http 8000 => thành công. Phần server là gì ?
+    Tôi chạy BE http://localhost:8000/api/documentation#/User/26b68341036642eed7c31c7ca9dafa03 
+    để thử mà ? sap lại qua ngrok ?
+
+    Phần "Servers" trong Swagger UI là nơi định nghĩa URL cơ sở (base URL) 
+    cho tất cả các API endpoints. Hiện tại nó đang hiển thị URL ngrok của bạn
+    : https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app
+    
+    Để có thể test API cả ở local và qua ngrok, chúng ta nên thêm cả hai servers. 
+    Hãy sửa lại annotation trong UserController:
+
+    php artisan l5-swagger:generate
+
+    => Bây giờ khi bạn refresh Swagger UI, bạn sẽ thấy một dropdown menu "Servers" cho phép bạn chọn giữa:
+    1. http://localhost:8000 - để test trực tiếp trên local
+    2. https://184d-2001-ee0-15d-db6a-58d0-a5d9-125a-2948.ngrok-free.app - để test thông qua ngrok
+
+    Cách sử dụng:
+    1. Chọn server bạn muốn test từ dropdown menu
+    2. Click vào nút "Authorize" và nhập API key
+    3. Thử các endpoints - request sẽ được gửi đến server bạn đã chọn
+
+    Lợi ích của việc có cả hai servers:
+        Local server: để test nhanh trong quá trình phát triển
+        Ngrok server: để chia sẻ API với người khác hoặc test từ các thiết bị/môi trường khác
+    Bạn có thể dễ dàng chuyển đổi giữa hai môi trường mà không cần thay đổi code hay cấu hình lại.
+
+    - Config lại url của 2 servers 
+    php artisan l5-swagger:generate
+        Bây giờ, mỗi khi URL ngrok thay đổi, bạn chỉ cần:
+        Cập nhật giá trị NGROK_URL trong file .env
+        Chạy lại lệnh php artisan l5-swagger:generate
+        Lợi ích của cách này:
+        Dễ dàng quản lý và cập nhật URL
+        Không cần sửa code khi URL thay đổi
+        Có thể có các cấu hình khác nhau cho các môi trường khác nhau (development, staging, production)
+        Tuân thủ nguyên tắc "configuration over code"
+
+    php artisan l5-swagger:generate
+    Tôi thấy khi bạn gọi API qua ngrok, 
+    nó đang trả về trang HTML của ngrok thay vì dữ liệu API. 
+    Đây là do ngrok đang chặn request. 
+    Chúng ta cần thêm header ngrok-skip-browser-warning vào request. Hãy sửa lại:
+
+    docker-compose restart
+
+
+https://395c-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app/api/documentation
+    => Trắng (Screenshot_10)
+    php artisan config:clear && php artisan cache:clear && php artisan l5-swagger:generate
+
+    php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+    => Truy cập https://395c-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app/api/documentation
+    thành công (Screenshot_11)
+
+    Đưa link 
+        https://395c-2001-ee0-262-1fc-84cc-955-2049-79ea.ngrok-free.app/api/documentation
+    cho FE test

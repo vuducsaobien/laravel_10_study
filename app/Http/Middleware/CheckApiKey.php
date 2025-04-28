@@ -20,8 +20,8 @@ class CheckApiKey
 
         if (!$apiKey || $apiKey !== $validApiKey) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid API key'
+                'success' => false,
+                'message' => 'Unauthorized'
             ], 401);
         }
 
