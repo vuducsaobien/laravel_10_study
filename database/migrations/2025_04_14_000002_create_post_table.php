@@ -13,19 +13,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        try {
-            Schema::create('posts', function (Blueprint $table) {
-                $table->id();
-                $table->string('title')->nullable(false);
-                $table->text('content')->nullable(false);
-                $table->unsignedBigInteger('author_id')->nullable()->default(null);
-                $table->timestamps();
-                $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
-            });
-        } catch (\Exception $e) {
-            // $this->down();
-            // throw $e;
-        }
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->unsignedBigInteger('author_id')->nullable();
+            $table->timestamps();
+            
+            $table->foreign('author_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('set null');
+        });
     }
 
     /**

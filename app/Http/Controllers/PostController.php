@@ -2,96 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PostService;
-use Illuminate\Http\JsonResponse;
-use Exception;
-use App\Http\Request\Post\CreateRequest;
-use App\Http\Request\Post\UpdateRequest;
-use Throwable;
-use App\Exceptions\Handler;
-class PostController extends BaseController
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class PostController extends Controller
 {
-    public $postService;
-
-    public function __construct(PostService $postService)
-    {
-        $this->postService = $postService;
-    }
-
     public function index()
     {
-        return view('posts.index');
+        $posts = Post::with('author')->get();
+        return view('posts.index', compact('posts'));
     }
 
-    /**
-     * Get List Posts
-     */
-    public function getListPosts(): JsonResponse
+    public function store(Request $request)
     {
-        try {
-            $result = $this->postService->getAllPosts();
-            
-            return $this->successBase($result, __('message.post.retrieved_successfully'));
-        } catch (Throwable $e) {
-            return (new Handler(app()))->render(request(), $e);
-        }
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $validated['author_id'] = Auth::id();
+        
+        Post::create($validated);
+
+        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
 
-    /**
-     * Get User By Id
-     */
-    public function getPostById(int $id): JsonResponse
+    public function update(Request $request, $id)
     {
-        try {
-            $result = $this->postService->getPostById($id);
-            
-            return $this->successBase($result, __('message.post.retrieved_successfully'));
-        } catch (Throwable $e) {
-            return (new Handler(app()))->render(request(), $e);
-        }
+        $post = Post::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $post->update($validated);
+
+        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
 
-    /**
-     * Create Post
-     */
-    public function createPost(CreateRequest $request): JsonResponse
+    public function destroy($id)
     {
-        try {
-            $params = $request->all();
-            $result = $this->postService->createPost($params);
-            
-            return $this->successBase($result, __('message.post.created_successfully'));
-        } catch (Throwable $e) {
-            return (new Handler(app()))->render(request(), $e);
-        }
-    }
+        $post = Post::findOrFail($id);
+        $post->delete();
 
-    /**
-     * Update Post
-     */
-    public function updatePost(UpdateRequest $request, int $id): JsonResponse
-    {
-        try {
-            $params = $request->all();
-            $result = $this->postService->updatePost($id, $params);
-            
-            return $this->successBase($result, __('message.post.updated_successfully'));
-        } catch (Throwable $e) {
-            return (new Handler(app()))->render(request(), $e);
-        }
-    }
-
-    /**
-     * Delete Post
-     */
-    public function deletePost(int $id): JsonResponse
-    {
-        try {
-            $result = $this->postService->deletePost($id);
-            
-            return $this->successBase($result, __('message.post.deleted_successfully'));
-        } catch (Throwable $e) {
-            return (new Handler(app()))->render(request(), $e);
-        }
+        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
     }
 }

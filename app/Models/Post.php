@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\BaseModel;
-class Post extends BaseModel
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
 {
     use HasFactory;
     // Mỗi bài viết phải có title, content, authorId, createdAt, updatedAt
@@ -16,12 +17,6 @@ class Post extends BaseModel
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
-    }
-
-    // Get Author
-    public function getAuthorAttribute()
-    {
-        return $this->author();
     }
 
     public static function getAllPosts()
