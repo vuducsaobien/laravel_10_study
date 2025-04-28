@@ -14,28 +14,94 @@ class UserRepository
         $this->model = $model;
     }
 
+    /**
+     * Get all users
+     * 
+     * @return Collection
+     */
     public function getAll(): Collection
     {
         return $this->model->select('id', 'name', 'email')->get();
     }
 
+    /**
+     * Get all users with posts
+     * 
+     * @return Collection
+     */
+    public function getAllWithPosts(): Collection
+    {
+        return $this->model->with('posts')->get();
+    }
+
+    /**
+     * Find user by ID
+     * 
+     * @param int $id
+     * @return User|null
+     */
     public function findById(int $id): ?User
     {
         return $this->model->find($id);
     }
 
+    /**
+     * Find user by ID with posts
+     * 
+     * @param int $id
+     * @return User|null
+     */
+    public function findByIdWithPosts(int $id): ?User
+    {
+        return $this->model->with('posts')->find($id);
+    }
+
+    /**
+     * Create user
+     * 
+     * @param array $data
+     * @return User
+     */
     public function create(array $data): User
     {
         return $this->model->create($data);
     }
 
+    /**
+     * Update user by ID
+     * 
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
     public function update(int $id, array $data): bool
     {
-        $user = $this->model->lockForUpdate()->findOrFail($id);
-        if (!$user->update($data)) {
-            throw new \Exception('Failed to update user');
-        }
-        return true;
+        $user = $this->findById($id);
+        return $user->update($data);
+    }
+
+    /**
+     * Update user with lock to avoid race condition.
+     * 
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function updateWithLock(int $id, array $data): bool
+    {
+        $user = $this->getUserWithLock($id);
+        return $user->update($data);
+    }
+
+    /**
+     * Get user with lock to avoid race condition.
+     * 
+     * @param int $id
+     * @return User
+     */
+    protected function getUserWithLock(int $id): User
+    {
+        return $this->model->lockForUpdate()->findOrFail($id);
     }
 
     /**
@@ -43,35 +109,10 @@ class UserRepository
      * 
      * @param int $id
      * @return bool
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     * @throws \Exception
      */
     public function delete(int $id): bool
     {
-        $user = $this->model->lockForUpdate()->findOrFail($id);
-        if (!$user->delete()) { // Tái hiện bằng cách dùng ON DELETE RESTRICT trên User table
-            throw new \Exception('Failed to delete user');
-        }
-        return true;
-    }
-
-    /**
-     * Test database connection
-     * 
-     * @throws \PDOException
-     */
-    public function testConnection()
-    {
-        return $this->model->getConnection()->getPdo();
-    }
-
-    /**
-     * Test invalid SQL query
-     * 
-     * @throws \Illuminate\Database\QueryException
-     */
-    public function testInvalidQuery()
-    {
-        return $this->model->getConnection()->select('INVALID SQL QUERY');
+        $user = $this->getUserWithLock($id);
+        return $user->delete();
     }
 } 

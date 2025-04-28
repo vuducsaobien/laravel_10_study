@@ -2,13 +2,10 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRepository;
 use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
 use Throwable;
 use App\Exceptions\Handler;
-use Illuminate\Support\Facades\DB;
-use App\Exceptions\BusinessException;
 use App\Models\User;
 class CacheService
 {
@@ -19,12 +16,44 @@ class CacheService
             $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $user->id);
             CacheHelper::set($key, $user->toArray());
 
-            // Delete key list user
+            $this->deleteUserListCache();
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
+        }
+    }
+
+    public function deleteUserListCache()
+    {
+        try {
             CacheHelper::del(CacheHelper::generateKey(CacheKeysEnum::USER_LIST));
         } catch (Throwable $e) {
             return (new Handler(app()))->render(request(), $e);
         }
     }
+
+    public function deleteUserByIdCache(int $id)
+    {
+        try {
+            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $id);
+            CacheHelper::del($key);
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
+        }
+    }
+
+    public function setUserByIdCache(User $user)
+    {
+        try {
+            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, $user->id);
+            CacheHelper::set($key, $user->toArray());
+        } catch (Throwable $e) {
+            return (new Handler(app()))->render(request(), $e);
+        }
+    }
+
+
+
+
 
 
 }

@@ -8,10 +8,9 @@ use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
 use Throwable;
 use App\Exceptions\Handler;
-class PostService
+class PostService extends BaseService
 {
-    const PER_PAGE = 10;
-    
+    /**
     /**
      * Get All Posts
      */

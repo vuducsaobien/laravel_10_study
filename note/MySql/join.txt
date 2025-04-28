@@ -1,0 +1,50 @@
+subquery, view, trigger, stored procedure
+dump-laravel_10_study-202504261242.sql
+
+-- LEFT JOIN
+SELECT 
+    table_1.id as table_1_ID,  table_2.table_1_id as table_2_FK_table_1_id, table_2.id as table_2_ID,
+    table_1.name, table_2.title
+
+FROM table_1      LEFT JOIN    table_2 
+ON   table_1.id    =           table_2.table_1_id;
+
+Table - Result Database :
+| table_1_ID | table_2_FK_table_1_id | table_2_ID | name             | title             |
+|------------|-----------------------|------------|------------------|-------------------|
+| 1          | 1                     | 1          | Table 1 - Name 1 | Table 2 - title 1 |
+| 1          | 1                     | 2          | Table 1 - Name 1 | Table 2 - title 1 |
+| 2          | 2                     | 3          | Table 1 - Name 2 | Table 2 - title 1 |
+| 3          | NULL                  | NULL       | Table 1 - Name 3 | NULL              |
+
+
+=> Lấy      table_1 ID = 1 => Table 2        có table_1_id = 1 => Lấy record này.
+=> Lấy tiếp table_1 ID = 1 => Table 2        có table_1_id = 1 => Lấy record này.
+=> Lấy tiếp table_1 ID = 1 => Table 2 không  có table_1_id = 1 => Lấy table_1 ID = 2;
+
+=> Lấy      table_1 ID = 2 => Table 2        có table_1_id = 2 => Lấy record này.
+=> Lấy tiếp table_1 ID = 2 => Table 2 không  có table_1_id = 2 => Lấy table_1 ID = 3;
+
+=> Lấy      table_1 ID = 3 => Table 2        có table_1_id = 3 => Lấy record này.
+=> Lấy tiếp table_1 ID = 3 => Table 2 không  có table_1_id = 3 => 
+
+
+
+-- JOIN
+SELECT
+	table_2.id as table_2_ID,
+	table_2.table_1_id as table_2_FK_table_1_id,
+	table_1.id as table_1_ID,  
+	table_2.title, table_1.name
+
+FROM table_2 JOIN table_1 
+ON table_2.table_1_id = table_1.id;
+
+Table - Result Database :
+| table_2_ID | table_2_FK_table_1_id | table_1_ID | name             | title             |
+|------------|-----------------------|------------|------------------|-------------------|
+| 1          | 1                     | 1          | Table 1 - Name 1 | Table 2 - title 1 |
+| 2          | 1                     | 1          | Table 1 - Name 1 | Table 2 - title 2 |
+| 3          | 2                     | 2          | Table 1 - Name 2 | Table 2 - title 3 |
+
+

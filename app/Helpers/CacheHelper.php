@@ -84,12 +84,23 @@ class CacheHelper
         return self::get($key);
     }
 
-    public static function returnCachedResult($data, string $dataType)
+    public static function returnCachedResult($data, string $dataType = '')
     {
-        if ($dataType === CacheDataTypeEnum::ARRAY) {
+        $dataTypeChoosen = $dataType ?? config('my_config.cache_data_type');
+
+        if ($dataTypeChoosen === CacheDataTypeEnum::ARRAY) {
             return $data->toArray() ?? [];
         }
 
         return $data ?? returnEmptyObject();
     }
+
+    public static function returnCachedEmptyInit()
+    {
+        if (config('my_config.cache_data_type') === CacheDataTypeEnum::ARRAY) {
+            return [];
+        }
+        return returnEmptyObject();
+    }
+
 }

@@ -20,6 +20,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => '',
+            // 'name' => fake()->name(),
             'email' => fake()->email(),
         ];
     }
@@ -32,9 +33,9 @@ class UserFactory extends Factory
         return $this->afterMaking(function (User $table) {
             // ...
         })->afterCreating(function (User $table) {
-            // $table->update([
-            //     'name' => "table User - id : {$table->id}" // Chú ý: Sau khi tạo User qua Factory, name sẽ đổi lại
-            // ]);
+            $table->update([
+                'name' => "User name - id : {$table->id}" // Chú ý: Sau khi tạo User qua Factory, name sẽ đổi lại
+            ]);
         });
     }
 

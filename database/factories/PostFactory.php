@@ -28,9 +28,25 @@ class PostFactory extends Factory
         $user = User::all()->random();
 
         return [
-            'title' => fake()->title(),
+            // 'title' => fake()->title(),
+            'title' => '',
             'content' => fake()->text(),
             'author_id' => $user->id
         ];
     }
+
+    /**
+     * Configure the model factory.
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Post $table) {
+            // ...
+        })->afterCreating(function (Post $table) {
+            $table->update([
+                'title' => "Post title - id : {$table->id}" // Chú ý: Sau khi tạo Post qua Factory, title sẽ đổi lại
+            ]);
+        });
+    }
+
 }

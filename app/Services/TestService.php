@@ -11,7 +11,7 @@ use App\Helpers\CacheHelper;
 use App\Enum\CacheKeysEnum;
 use App\Repositories\UserRepository;
 use App\Enum\CacheDataTypeEnum;
-class TestService
+class TestService extends BaseService
 {
     private $repository;
     private $userRepository;
@@ -47,19 +47,30 @@ class TestService
     {
         DB::beginTransaction();
         try {
-            // Update record để test rollback DB
-            $id = 1;
-            $this->repository->update($id, ['name' => 'Test Rollback DB']);
+            // String
+            CacheHelper::set('key_string', 'value_string');
+            $value = CacheHelper::get('key_string');
 
-            // Test record not found - BusinessException
-            $idNotExist = -99999;
-            $testRecordNotFound = $this->repository->findById($idNotExist);
-            if (!$testRecordNotFound) {
-                throw new BusinessException('BusinessException - Test record not found');
-            }
+            // Array
+            // CacheHelper::set('key_array', ['value_1', 'value_2', 'value_3']);
+            // $value = CacheHelper::get('key_array');
+            
+            $key = CacheHelper::generateKey(CacheKeysEnum::USER_BY_ID, 1);
+            $data = CacheHelper::getFromCacheOrSet($key, function () {
+                // Cache key not found, get from DB
+                return CacheHelper::returnCachedResult(
+                    $this->userRepository->findById(1), 
+                    config('my_config.cache_data_type')
+                );
+            });
 
-            // Test division by zero - SystemException
-            // $divisionByZero = 5 / 0;
+
+            // Object
+            // CacheHelper::set('key_object', (object)['value_1', 'value_2', 'value_3']);
+            // $value = CacheHelper::get('key_object');
+            
+            var_dump($data);
+            die('string');
             
             DB::commit();
         } catch (\Throwable $e) {
