@@ -5,9 +5,12 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use App\Trait\HandlesExceptions;
+use Illuminate\Support\Facades\Log;
+use App\Trait\HttpRespond;
 class Handler extends ExceptionHandler
 {
     use HandlesExceptions;
+    use HttpRespond;
 
     /**
      * A list of exception types with their corresponding custom log levels.
@@ -54,25 +57,21 @@ class Handler extends ExceptionHandler
      * @param  \Illuminate\Http\Request  $request
      * @param  \Throwable  $exception
      * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws \Throwable
      */
     public function render($request, Throwable $exception)
     {
         // Always return JSON for API requests
         if ($request->is('api/*') || $request->expectsJson()) {
-            // dd($exception);
-            // die;
-
             $statusCode = $this->handleException($exception);
-            
-            return response()->json([
-                'success' => false,
-                'message' => $exception->getMessage(),
+            $message = $exception->getMessage();
+
+            Log::channel('custom_error')->error($message, [
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
-                'code' => $statusCode
-            ], $statusCode);
+                'code' => $exception->getCode()
+            ]);
+
+            return $this->errorBase($message, $statusCode);
         }
 
         return parent::render($request, $exception);

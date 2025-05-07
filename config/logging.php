@@ -109,6 +109,12 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'custom_error' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/error_' . date('dmY') . '.log'),
+            'level' => 'error',
+        ],
+
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,

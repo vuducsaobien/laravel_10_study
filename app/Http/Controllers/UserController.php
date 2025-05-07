@@ -10,6 +10,7 @@ use Throwable;
 use App\Http\Request\User\CreateRequest;
 use App\Http\Request\User\UpdateRequest;
 use App\Exceptions\BusinessException;
+use App\Trait\HttpRespond;
 /**
  * @OA\Info(
  *     version="1.0.0",
@@ -31,6 +32,7 @@ use App\Exceptions\BusinessException;
 class UserController extends BaseController
 {
     public $userService;
+    use HttpRespond;
 
     public function __construct(UserService $userService)
     {

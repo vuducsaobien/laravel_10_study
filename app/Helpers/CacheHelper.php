@@ -84,6 +84,13 @@ class CacheHelper
         return self::get($key);
     }
 
+    /**
+     * Return the cached result
+     *
+     * @param mixed $data
+     * @param string $dataType
+     * @return mixed
+     */
     public static function returnCachedResult($data, string $dataType = '')
     {
         $dataTypeChoosen = $dataType ?? config('my_config.cache_data_type');
