@@ -1,0 +1,2 @@
+git config user.name "Duc Local"
+git config user.email "vuducsaobien95@gmail.com"

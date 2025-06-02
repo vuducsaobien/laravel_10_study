@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserProduct;
 use App\Models\Supplier;
+use App\Models\Table_1;
+use App\Models\Table_2;
 
 class HomeController extends Controller
 {
@@ -33,23 +35,42 @@ class HomeController extends Controller
 
     public function oneToOneExample()
     {
-        // 1. Tìm xem User này có Vân tay duy nhất là Vân tay nào ?
-        // Lấy cha ở table User id = 1 và Vân tay duy nhất của nó (table Finger)
-        // $user = User::where('id', 1)->with('finger')->first();
-        // $finger = $user->finger;
+        // Cách 1: Lấy cha ở table 1 và con ở table 2
+        // $table_1 = Table_1::where('id', 1)->first();
+        // $table_2 = $table_1->table_2;
+        // echo '<pre style="color:red";>Cách 1 - $table_1 === '; print_r($table_1);echo '</pre>';
+        // echo '<pre style="color:red";>Cách 1 - $table_2 === '; print_r($table_2);echo '</pre>';
 
-        // $user = User::where('id', 1)->first();
-        // $finger = $user->finger;
+        // Cách 2: Lấy con ở table 2 với eager loading từ table 1
+        // $table_2_via_table_1 = Table_1::where('id', 3)->with('table_2')->first();
+        // echo '<pre style="color:red";>Cách 2 - $table_2_via_table_1 === '; print_r($table_2_via_table_1);echo '</pre>';
 
-        // 2. Lấy con ở table 2 id = 1 và cha của nó ở table User
-        $finger = Finger::where('id', 2)->first();
+        // Cách 3: Lấy con (Table_2) và truy cập ngược lên cha (Table_1)
+        // $table_2 = Table_2::where('id', 1)->first();
+        // $table_1_via_table_2 = $table_2->table_1;
+        // echo '<pre style="color:red";>Cách 3 - $table_1_via_table_2 === '; print_r($table_1_via_table_2);echo '</pre>';
 
-        $user = $finger->user;
+        // Cách 4: Sử dụng eager loading với with() từ Table_2
+        // $table_2_with_parent = Table_2::where('id', 1)->with('table_1')->first();
+        // echo '<pre style="color:red";>Cách 4 - $table_2_with_parent === '; print_r($table_2_with_parent);echo '</pre>';
 
-        echo '<pre style="color:red";>$user === '; print_r($user);echo '</pre>';
-        echo '<pre style="color:red";>$finger === '; print_r($finger);echo '</pre>';
+        // Cách 5: Sử dụng whereHas() để lọc theo điều kiện của relationship
+        // $like_1 = 'table 1'; // (Table 1 : id = 1 : name = table 1 - id 1 - name)
+        // $like_1 = 'NOT LIKE'; // NULL (Table 1 : id = 3 ; name - NOT LIKE)
+        // $table_1_has_table_2 = Table_1::whereHas('table_2', function($query) use ($like_1) {
+        //     $query->where('name', 'like', '%'.$like_1.'%');
+        // })->get();
+        // echo '<pre style="color:red";>Cách 5 - $table_1_has_table_2 === '; print_r($table_1_has_table_2);echo '</pre>';
 
-        echo '<h3>Die is Called - 21w3</h3>';die;
+        // Cách 6: Sử dụng has() để kiểm tra sự tồn tại của relationship (Table 1 : id =1)
+        // $table_1_with_table_2 = Table_1::has('table_2')->get(); // (Table 1 : id = 1 : name = table 1 - id 1 - name)
+        // echo '<pre style="color:red";>Cách 6 - $table_1_with_table_2 === '; print_r($table_1_with_table_2);echo '</pre>';
+
+        // Cách 7: Sử dụng doesntHave() để lấy những bản ghi không có relationship
+        $table_1_without_table_2 = Table_1::doesntHave('table_2')->get(); // (Record đối ngược của 6: has)
+        echo '<pre style="color:red";>Cách 7 - $table_1_without_table_2 === '; print_r($table_1_without_table_2);echo '</pre>';
+
+        echo '<h3>Die is Called - One To One Example</h3>';die;
     }
 
     public function oneToMany()
@@ -99,8 +120,8 @@ class HomeController extends Controller
         echo '<pre style="color:red";>$products === '; print_r($products);echo '</pre>';
 
         foreach ($user->products as $product) {
-            $productName = $product->name;
-            $quantity = $product->pivot->quantity;
+            $productName = $product['name'];
+            $quantity = $product['pivot']['quantity'];
             echo '<pre style="color:red";>$productName === '; print_r($productName);echo '</pre>';
             echo '<pre style="color:red";>$quantity === '; print_r($quantity);echo '</pre>';
         }
@@ -152,5 +173,13 @@ class HomeController extends Controller
 
         //     echo '<h3>Die is Called - history</h3>';die;
         // }
+    }
+
+    public function oneToOneExampleNew()
+    {
+        $table_2 = Table_2::where('id', 1)->first();
+        $table_1 = $table_2->table_1;
+        echo '<pre style="color:red";>$table_1 === '; print_r($table_1);echo '</pre>';
+        echo '<h3>Die is Called - 21w3</h3>';die;
     }
 }
