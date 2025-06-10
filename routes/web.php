@@ -17,7 +17,7 @@ use App\Http\Controllers\HomeController;
 Route::get('/', [HomeController::class, 'index'])->name('home_index');
 Route::get('/oneToOneExample', [HomeController::class, 'oneToOneExample'])->name('oneToOneExample');
 Route::get('/oneToMany', [HomeController::class, 'oneToMany'])->name('oneToMany');
-Route::get('/manyToMany', [HomeController::class, 'manyToMany'])->name('manyToMany');
+Route::get('/manytomany', [HomeController::class, 'manyToMany'])->name('manyToMany');
 Route::get('/hasManyThrough', [HomeController::class, 'hasManyThrough'])->name('hasManyThrough');
 Route::get('/hasOneThrough', [HomeController::class, 'hasOneThrough'])->name('hasOneThrough');
 

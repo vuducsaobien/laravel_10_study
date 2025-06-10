@@ -12,6 +12,7 @@ use App\Models\UserProduct;
 use App\Models\Supplier;
 use App\Models\Table_1;
 use App\Models\Table_2;
+use App\Models\Table_4;
 
 class HomeController extends Controller
 {
@@ -103,34 +104,41 @@ class HomeController extends Controller
 
     public function manyToMany()
     {
-        // 1. Tìm xem User này có những relationships nào ?
-        // $user = User::find(1);
-        // $products = $user->products;
-        // echo '<pre style="color:red";>$user === '; print_r($user);echo '</pre>';
-        // echo '<pre style="color:red";>$products === '; print_r($products);echo '</pre>';
+        // Cách 1: Lấy tất cả Table_4 của một Table_1
+        // $table_1 = Table_1::where('id', 1)->first();
+        // $table_1 = Table_1::where('id', 2)->first();
 
-        // 2. Tìm xem product_id = 1 thì có những user nào mua ?
-        // $productId = 1;
-        // $users = $this->__userProduct->getUniqueUsersByProductId($productId);
-        // echo '<pre style="color:red";>$users === '; print_r($users);echo '</pre>';
+        // $table_4s = $table_1->table_4;
+        // echo '<pre style="color:red";>Cách 1 - $table_4s === '; print_r($table_4s);echo '</pre>';
 
-        // 3. Tìm xem user_id = 1 thì có những mua những product nào ?       
-        // $userId = 3;
-        // $products = $this->__userProduct->getUniqueProductsByUserId($userId);
-        // echo '<pre style="color:red";>$products === '; print_r($products);echo '</pre>';
+        // // Cách 2: Lấy tất cả Table_4 của một Table_1 với eager loading
+        // $table_1_with_table_4 = Table_1::where('id', 1)->with('table_4')->first();
+        // echo '<pre style="color:red";>Cách 2 - $table_1_with_table_4 === '; print_r($table_1_with_table_4);echo '</pre>';
 
-        // 4. Lấy danh sách sản phẩm mà một user đã mua kèm thông tin pivot
-        $user = User::find(3);
-        $products = $user->products->toArray();
-        echo '<pre style="color:red";>$products === '; print_r($products);echo '</pre>';
+        // // Cách 3: Lấy tất cả Table_1 của một Table_4
+        // $table_4 = Table_4::where('id', 1)->first();
+        // $table_1s = $table_4->table_1;
+        // echo '<pre style="color:red";>Cách 3 - $table_1s === '; print_r($table_1s);echo '</pre>';
 
-        foreach ($user->products as $product) {
-            $productName = $product['name'];
-            $quantity = $product['pivot']['quantity'];
-            echo '<pre style="color:red";>$productName === '; print_r($productName);echo '</pre>';
-            echo '<pre style="color:red";>$quantity === '; print_r($quantity);echo '</pre>';
-        }
-        echo '<h3>Die is Called - 21w3</h3>';die;
+        // // Cách 4: Lấy tất cả Table_1 của một Table_4 với eager loading
+        // $table_4_with_table_1 = Table_4::where('id', 1)->with('table_1')->first();
+        // echo '<pre style="color:red";>Cách 4 - $table_4_with_table_1 === '; print_r($table_4_with_table_1);echo '</pre>';
+
+        // // Cách 5: Lọc Table_1 dựa trên điều kiện của Table_4
+        // $table_1_has_table_4 = Table_1::whereHas('table_4', function($query) {
+        //     $query->where('name', 'like', '%something%');
+        // })->get();
+        // echo '<pre style="color:red";>Cách 5 - $table_1_has_table_4 === '; print_r($table_1_has_table_4);echo '</pre>';
+
+        // // Cách 6: Lấy Table_1 có ít nhất một Table_4
+        // $table_1_with_table_4 = Table_1::has('table_4')->get();
+        // echo '<pre style="color:red";>Cách 6 - $table_1_with_table_4 === '; print_r($table_1_with_table_4);echo '</pre>';
+
+        // // Cách 7: Lấy Table_1 không có Table_4 nào
+        $table_1_without_table_4 = Table_1::doesntHave('table_4')->get();
+        echo '<pre style="color:red";>Cách 7 - $table_1_without_table_4 === '; print_r($table_1_without_table_4);echo '</pre>';
+
+        echo '<h3>Die is Called - Many To Many Example</h3>';die;
     }
 
     public function hasManyThrough()
