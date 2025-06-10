@@ -75,23 +75,28 @@ class HomeController extends Controller
 
     public function oneToMany()
     {
-        // 1. Tìm xem User này có những relationships nào ?
-        // $user = User::where('id', 1)->first();
-        // $finger = $user->finger; // Tìm xem User này có Vân tay duy nhất là Vân tay nào ?
-        // $phones = $user->phones; // Tìm xem User này có những số điện thoại nào ?
+        // Cách 1.1: Lấy cha ở table 1 và con ở table 3
+        // $table_1_id = 1; // Table 3 : id = 1 & 2
+        // $table_1_id = 2; // Table 3 : id = 3
+        // $table_1_id = 3; // Table 3 : NULL
 
-        // 2. Tìm xem những mối quan hệ này thuộc về User nào ?
-        // A. Finger
-        // $finger = Finger::where('id', 2)->first();
-        // $user = $finger->user;
-        // B. Phones
-        $phone = Phone::where('id', 3)->first();
-        $user = $phone->user; // User có Phone id = 3
-        $phones = $user->phones; // List các số đt của User có Phone id = 3
+        // $table_1 = Table_1::where('id', $table_1_id)->first();
+        // $table_3 = $table_1->table_3;
+        // echo '<pre style="color:red";>$table_3 === '; print_r($table_3);echo '</pre>';
 
-        echo '<pre style="color:red";>$phone === '; print_r($phone);echo '</pre>';
-        // echo '<pre style="color:red";>$user === '; print_r($user);echo '</pre>';
-        echo '<pre style="color:red";>$phones === '; print_r($phones);echo '</pre>';
+        // Cách 1.2: Lấy cha ở table 1 và con ở table 3 = Eager Loading
+        $table_1_id = 1; // Table 3 : id = 1 & 2
+        $table_1 = Table_1::where('id', $table_1_id)->first();
+        $table_1_with_table_3 = $table_1->table_3;
+        echo '<pre style="color:red";>$table_1_with_table_3 === '; print_r($table_1_with_table_3);echo '</pre>';
+
+        // Cách 2: Lấy con ở table 3 với eager loading từ table 1
+        $table_3_via_table_1 = Table_1::where('id', 1)->with('table_3')->first();
+        echo '<pre style="color:red";>$table_3_via_table_1 === '; print_r($table_3_via_table_1);echo '</pre>';
+
+        // Cách 2: Lấy con ở table 3 với eager loading từ table 1
+        // $table_3_via_table_1 = Table_1::where('id', 1)->with('table_3')->first();
+        // echo '<pre style="color:red";>$table_3_via_table_1 === '; print_r($table_3_via_table_1);echo '</pre>';
 
         echo '<h3>Die is Called - 21w3</h3>';die;
     }

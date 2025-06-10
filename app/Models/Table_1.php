@@ -18,5 +18,10 @@ class Table_1 extends Model
     {
         return $this->hasOne(Table_2::class, 'table_1_id');
     }
+
+    public function table_3() // One to Many
+    {
+        return $this->hasMany(Table_3::class, 'table_1_id');
+    }
     
 }
